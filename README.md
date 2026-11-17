@@ -4,16 +4,17 @@
 
 > *Pealo* é o laço gaúcho lançado nas patas dianteiras do animal em disparada. A PEALO segura o incidente antes que ele se espalhe e devolve o serviço à normalidade.
 
-Site estático (HTML + CSS, publicado pelo GitHub Pages) do **Sistema de Registro de Incidentes do datacenter**. A definição final é a **v6.0** (C4 Model e simulação). As apresentações anteriores aparecem como trajetória:
+Site estático (HTML + CSS, publicado pelo GitHub Pages) do **Sistema de Registro de Incidentes do datacenter**. A definição final é a **v6.1** (C4 Model e simulação). As apresentações anteriores aparecem como trajetória:
 
 1. Registro de Incidentes com IA (27/10)
 2. Sistema de Registro de Incidentes (27/10)
 3. Versão revisada (27/10)
 4. Versão fonte grande (27/10)
 5. O que mudou no sistema (03/11)
-6. C4 Model v6.0 e simulação (17/11) · definição final
+6. C4 Model v6.0 e simulação (17/11)
+7. C4 Model v6.1 (17/11) · versão final
 
-Código do sistema: <https://github.com/douglaslautert/registro-incidentes-datacenter>
+Código do sistema: <https://github.com/douglaslautert/cesup_incidentes>
 
 ## Estrutura
 
@@ -21,6 +22,6 @@ Código do sistema: <https://github.com/douglaslautert/registro-incidentes-datac
 index.html            página
 assets/style.css      estilos
 assets/logo.svg       logo (laço em volta de um servidor)
-assets/c4-v6.html     C4 Model v6.0 interativo
+assets/c4-v6.1.html   C4 Model v6.1 interativo
 assets/simulacao.mp4  vídeo da simulação de ponta a ponta
 ```

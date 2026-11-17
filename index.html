@@ -10,7 +10,7 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="https://pealo-cesup.github.io/">
 <meta property="og:title" content="PEALO · CESUP — Incidente laçado antes de disparar">
-<meta property="og:description" content="Sistema de Registro de Incidentes do datacenter do CESUP/UFRGS. Relato por Telegram, painel web e Zabbix, com SLA e C4 Model v6.0.">
+<meta property="og:description" content="Sistema de Registro de Incidentes do datacenter do CESUP/UFRGS. Relato por Telegram, painel web e Zabbix, com SLA e C4 Model v6.1.">
 <meta property="og:image" content="https://pealo-cesup.github.io/assets/simulacao-poster.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
@@ -86,7 +86,7 @@
       </div>
     </div>
     <div class="stats">
-      <div><b>151</b><span>testes automatizados no backend e no bot</span></div>
+      <div><b>153</b><span>testes automatizados no backend e no bot</span></div>
       <div><b>7</b><span>contêineres: db · redis · api · worker · beat · bot · web</span></div>
       <div><b>4</b><span>migrações Alembic, aplicadas na subida da API</span></div>
       <div><b>0</b><span>áudios enviados para fora: Whisper roda local</span></div>
@@ -191,13 +191,13 @@
 
   <!-- ARQUITETURA -->
   <section id="arquitetura" class="wrap section">
-    <p class="eyebrow">Arquitetura · C4 Model v6.0</p>
+    <p class="eyebrow">Arquitetura · C4 Model v6.1</p>
     <h2>Clique nas caixas para descer de nível</h2>
     <p class="muted">Do contexto (N1) aos contêineres (N2), componentes (N3) e detalhes de cada componente (N4), com rotas, regras e casos testados.</p>
     <div class="c4-frame">
-      <iframe src="assets/c4-v6.html" title="C4 Model v6.0 interativo do Sistema de Registro de Incidentes" loading="lazy"></iframe>
+      <iframe src="assets/c4-v6.1.html" title="C4 Model v6.1 interativo do Sistema de Registro de Incidentes" loading="lazy"></iframe>
     </div>
-    <p class="small"><a href="assets/c4-v6.html" target="_blank">Abrir o C4 em tela cheia ↗</a></p>
+    <p class="small"><a href="assets/c4-v6.1.html" target="_blank">Abrir o C4 em tela cheia ↗</a></p>
   </section>
 
   <!-- WHATSAPP -->
@@ -221,8 +221,8 @@
   <!-- TRAJETÓRIA -->
   <section id="trajetoria" class="wrap section">
     <p class="eyebrow">Trajetória</p>
-    <h2>Como chegamos à v6.0</h2>
-    <p class="muted">As apresentações registram as etapas do projeto. A definição em vigor é a v6.0, acima; ideias das primeiras versões, como as prioridades P1–P4 e o vigia externo 4G, ficaram fora dela.</p>
+    <h2>Como chegamos à v6.1</h2>
+    <p class="muted">As apresentações registram as etapas do projeto. A definição em vigor é a v6.1, acima; ideias das primeiras versões, como as prioridades P1–P4 e o vigia externo 4G, ficaram fora dela.</p>
 
     <div class="history">
       <details>
@@ -245,9 +245,13 @@
         <summary><span class="h-n">05</span><span class="h-t"><time>03 nov</time><strong>O que mudou no sistema</strong></span></summary>
         <p>10 pull requests em uma semana: instalação com <code>make install</code>/<code>uninstall</code>, rede local com HTTPS, relato por áudio e vídeo com transcrição local, evidências anexadas ao chamado e README no formato da SBC com licença MIT.</p>
       </details>
-      <details open>
-        <summary><span class="h-n final">06</span><span class="h-t"><time>17 nov</time><strong>C4 Model v6.0 e simulação · definição final</strong></span></summary>
+      <details>
+        <summary><span class="h-n">06</span><span class="h-t"><time>17 nov</time><strong>C4 Model v6.0 e simulação</strong></span></summary>
         <p>Telegram como canal principal, WhatsApp desligado, Whisper local, anexos de foto, vídeo e documento, e-mail com os arquivos do chamado, Zabbix 7.0 abrindo e fechando chamados, CI no GitHub Actions e 151 testes automatizados.</p>
+      </details>
+      <details open>
+        <summary><span class="h-n final">07</span><span class="h-t"><time>17 nov</time><strong>C4 Model v6.1 · versão final</strong></span></summary>
+        <p>Revisada por recomendação do Prof. Dr. Diego Kreutz: exemplos no contexto CESUP/UFRGS, simulação completa em 13 cenas (WhatsApp, Telegram, web, Zabbix e SLA) com vídeo, correção do vídeo de outro problema anexado ao chamado errado e do canal registrado na resolução, token do Telegram fora dos logs e 153 testes automatizados.</p>
       </details>
     </div>
   </section>
@@ -255,7 +259,7 @@
 
 <footer class="wrap footer">
   <p><strong>PEALO</strong> · Pronta Equipe de Atendimento e Liberação de Ocorrências · CESUP/UFRGS</p>
-  <p class="muted">Douglas Paim Lautert · PPGES/UNIPAMPA · <a href="https://github.com/douglaslautert/registro-incidentes-datacenter">código no GitHub</a></p>
+  <p class="muted">Douglas Paim Lautert · PPGES/UNIPAMPA · <a href="https://github.com/douglaslautert/cesup_incidentes">código no GitHub</a></p>
   <p class="muted">Pealou, resolveu.</p>
 </footer>
 

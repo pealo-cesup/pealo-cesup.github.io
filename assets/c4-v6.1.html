@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>C4 Model v6.0 — Incidentes CESUP/UFRGS</title>
+<title>C4 Model v6.1 (versão final) — Incidentes CESUP/UFRGS</title>
 <style>
 :root {
   --bg:#12141c; --canvas:#171a26; --hdr:#0e1018;
@@ -100,7 +100,7 @@ pre{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radiu
   <div id="breadcrumb"><b>Contexto do Sistema</b></div>
   <div id="lvlpill">N1</div>
   <div class="hint">🔍 Clique nas caixas para detalhar</div>
-  <div style="font-size:10px;color:var(--muted);margin-left:auto;padding-right:8px;white-space:nowrap">v6.0 · implementado · Telegram + anexos · 151 testes automatizados · migrações 0001–0004</div>
+  <div style="font-size:10px;color:var(--muted);margin-left:auto;padding-right:8px;white-space:nowrap" title="Versão final revisada por recomendação do Prof. Dr. Diego Kreutz">v6.1 · <b style="color:var(--tg-t)">versão final</b> · rec. Prof. Dr. Diego Kreutz · 153 testes · <a href="https://github.com/douglaslautert/cesup_incidentes" target="_blank" rel="noopener" style="color:var(--tg-t)">github.com/douglaslautert/cesup_incidentes</a></div>
 </header>
 <div class="wrap" id="wrap"></div>
 <script>
@@ -189,7 +189,7 @@ LEVELS.n1=()=>{
   c.appendChild(nd({id:'gg', x:195,y:480,w:145,icon:'🔑',name:'Google OAuth',      type:'[Sistema Externo]',desc:'Autenticação via conta Google',th:'ext'}));
   c.appendChild(nd({id:'st', x:360,y:480,w:145,icon:'🎙️',name:'Whisper local',    type:'[faster-whisper]', desc:'Transcrição de áudio e da trilha de vídeos, com vocabulário de TI',th:'ext',drill:'n4-stt',hint:'ver detalhes'}));
   c.appendChild(nd({id:'sm', x:525,y:480,w:145,icon:'📧',name:'Servidor SMTP',    type:'[Gmail]',          desc:'E-mails de notificação com os anexos do chamado',th:'ext'}));
-  c.appendChild(nd({id:'tg', x:690,y:480,w:160,icon:'✈️',name:'Telegram Bot API', type:'[Sistema Externo]',desc:'Canal principal: o bot do Telegram; long polling, sem URL pública',th:'tg new',drill:'n4-tga',hint:'ver canal'}));
+  c.appendChild(nd({id:'tg', x:690,y:480,w:160,icon:'✈️',name:'Telegram Bot API', type:'[Sistema Externo]',desc:'Canal principal: @incidentes_dtic_unipampa_bot; long polling, sem URL pública',th:'tg new',drill:'n4-tga',hint:'ver canal'}));
   // Zabbix — destaque laranja, lado direito
   c.appendChild(nd({id:'zbx',x:730,y:230,w:200,icon:'📡',name:'Zabbix',           type:'[Monitor Externo]',desc:'Monitora infraestrutura; dispara alertas automáticos como incidentes via webhook',th:'zbx',drill:'n4-zbx',hint:'ver integração'}));
   // arrows pessoas → sistema
@@ -1199,7 +1199,7 @@ LEVELS['n4-apc-web']=()=>n4panel('API Client','Interface Web · Integração',`
 // ── N4 v6 — Telegram, anexos e WhatsApp desligado ────────────────────────────
 LEVELS['n4-tga']=()=>n4panel('Telegram Adapter','Bot · Componente (bot/telegram.py) · v6',`
   <h3>Responsabilidades</h3>
-  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Canal principal desde a v6 (bot <code>o bot do Telegram</code>). Recebe mensagens por <b>long polling</b> (<code>getUpdates</code>, timeout 50 s) numa thread do contêiner do bot: não precisa de URL pública, túnel nem empresa verificada. Cada mensagem é convertida para o formato que o Processor já entende (o mesmo do WhatsApp), então parser, transcrição, anexos e janela de 10 min funcionam igual. Chamados ficam com <code>canal=TELEGRAM</code>.</p>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Canal principal desde a v6 (bot <code>@incidentes_dtic_unipampa_bot</code>). Recebe mensagens por <b>long polling</b> (<code>getUpdates</code>, timeout 50 s) numa thread do contêiner do bot: não precisa de URL pública, túnel nem empresa verificada. Cada mensagem é convertida para o formato que o Processor já entende (o mesmo do WhatsApp), então parser, transcrição, anexos e janela de 10 min funcionam igual. Chamados ficam com <code>canal=TELEGRAM</code>.</p>
   <h3>Partes</h3>
   ${tbl(['Classe','Papel','Interface que imita'],[
     ['<code>TelegramAPI</code>','Cliente mínimo da Bot API: getMe, deleteWebhook, getUpdates, sendMessage, getFile/download','—'],
@@ -1304,10 +1304,42 @@ LEVELS['n4-wa-off']=()=>n4panel('WhatsApp — por que está desligado','N1 · Si
   <div class="note">Nada no código depende do WhatsApp estar ligado: o Telegram usa o mesmo Processor, parser, STT e Gerenciador de Anexos.</div>`);
 
 // ── Changelog ────────────────────────────────────────────────────────────────
+// ── Vídeo da simulação ───────────────────────────────────────────────────────
+// Funciona no zip (vídeo ao lado do HTML) e no repositório (docs/simulacao.mp4)
+LEVELS['video']=()=>n4panel('Simulação completa em vídeo','Versão final · WhatsApp, Telegram, painel web, Zabbix e SLA',`
+  <video controls preload="metadata" style="width:100%;border-radius:8px;border:1px solid var(--border);background:#000">
+    <source src="simulacao.mp4" type="video/mp4">
+    <source src="Simulacao — Incidentes CESUP_UFRGS.mp4" type="video/mp4">
+    <source src="docs/simulacao.mp4" type="video/mp4">
+  </video>
+  <div class="note tg">O vídeo mostra uma execução real da API e do bot (<code>scripts/simular.py</code>) em ambiente isolado:
+  à esquerda, a conversa no celular; à direita, as notificações disparadas e o painel de chamados ao vivo. Nada é enviado de
+  verdade e a fala de áudios e vídeos é roteirizada. Gerado por <code>scripts/video_simulacao.py</code> no repositório
+  <a href="https://github.com/douglaslautert/cesup_incidentes" target="_blank" rel="noopener" style="color:var(--tg-t)">github.com/douglaslautert/cesup_incidentes</a>.</div>
+  ${tbl(['Cena','O que mostra'],[
+    ['1–6 · WhatsApp','Número não cadastrado; chamado por texto com foto; áudio vira chamado ALTA com PDF; consulta; cadastro de equipamento por palavras-chave; limites'],
+    ['7–9 · Telegram','Vinculação pelo contato; arquivo antes do relato; vídeo sobre outro problema (bot pergunta: anexar ou novo chamado); técnico vincula a conta'],
+    ['10–11 · Atendimento','Técnico assume no painel web e resolve pelo Telegram e pelo WhatsApp; quem abriu é notificado'],
+    ['12–13 · Automático','Zabbix abre e fecha um chamado sozinho; SLA Monitor escala prazo estourado'],
+  ])}`);
+
 LEVELS['changelog']=()=>n4panel('Changelog — C4 Model','Histórico de correções e atualizações',`
 
+  <h3>v6.1 — Versão final (recomendação do Prof. Dr. Diego Kreutz)</h3>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7">Versão final da ferramenta, revisada após recomendação do Prof. Dr. Diego Kreutz: exemplos do contexto CESUP/UFRGS e demonstração completa por simulação em vídeo. A simulação também revelou dois problemas, corrigidos nesta versão.</p>
+  ${tbl(['Item','Mudança'],[
+    ['Repositório','Código da ferramenta, este C4 e o vídeo: <a href="https://github.com/douglaslautert/cesup_incidentes" target="_blank" rel="noopener" style="color:var(--tg-t)">github.com/douglaslautert/cesup_incidentes</a> (vídeo em <code>docs/simulacao.mp4</code>)'],
+    ['Exemplos e marca','Todo o material passa a usar <b>CESUP/UFRGS</b>: interface web, mensagens do bot, e-mails de exemplo (<code>@ufrgs.br</code>), seed de demonstração, testes, README e este C4. Cenários de datacenter e cluster'],
+    ['Simulação completa','<code>scripts/simular.py</code>: API e bot reais em ambiente isolado, 13 cenas (WhatsApp, Telegram, web, Zabbix, SLA); relatório <code>docs/simulacao.html</code>'],
+    ['Vídeo','<code>scripts/video_simulacao.py</code> gera o vídeo da simulação (MP4, 1280×720, ~4 min) — botão <b>▶ Vídeo</b> no topo'],
+    ['Correção — vídeo de outro problema','Vídeo sem legenda logo após um chamado, cuja fala relata outro problema, era anexado ao chamado anterior; agora o bot pergunta <b>Anexar ao INC-XXXX</b> ou <b>Novo chamado</b>'],
+    ['Correção — canal na resolução','Resolução feita pelo Telegram era registrada como "Resolvido via WhatsApp"; agora registra o canal certo'],
+    ['Segurança','Token do bot do Telegram deixou de aparecer nos logs (filtro também no <code>httpx</code>, no worker e no beat); token revogado e trocado no BotFather'],
+    ['Testes','153 testes automatizados (eram 148 na v6.0)'],
+  ])}
+
   <h3>v6.0 — Implementação de ponta a ponta (17/11/2026)</h3>
-  <p style="font-size:11px;color:var(--muted);line-height:1.7">O modelo deixou de ser só especificação: o sistema está implementado no repositório <code>cesup_incidentes</code> e rodando em Docker Compose (7 contêineres). Esta versão documenta o que foi construído e as mudanças em relação à v5.1.</p>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7">O modelo deixou de ser só especificação: o sistema está implementado no repositório <a href="https://github.com/douglaslautert/cesup_incidentes" target="_blank" rel="noopener" style="color:var(--tg-t)">cesup_incidentes</a> e rodando em Docker Compose (7 contêineres). Esta versão documenta o que foi construído e as mudanças em relação à v5.1.</p>
   ${tbl(['Nível','Mudança'],[
     ['N1','<b>Telegram Bot API</b> adicionado como canal principal; WhatsApp marcado como <b>desligado</b> (conta Meta bloqueada); STT agora é Whisper local; SMTP é Gmail com anexos'],
     ['N2','Contêiner "Bot WhatsApp" → <b>Bot (Telegram + WhatsApp)</b>; volumes media/whisper/pgdata; Celery com worker + beat; nginx (web) faz proxy de /api, /ws e /webhook'],
@@ -1385,6 +1417,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     btn.style.cssText='margin-left:8px;font-size:11px;padding:3px 8px;opacity:.7';
     btn.onclick=()=>nav('changelog','Changelog');
     hdr.insertBefore(btn,hdr.querySelector('.hint'));
+    const vid=document.createElement('button');
+    vid.textContent='▶ Vídeo';
+    vid.style.cssText='margin-left:4px;font-size:11px;padding:3px 8px;opacity:.85';
+    vid.onclick=()=>nav('video','Vídeo da simulação');
+    hdr.insertBefore(vid,hdr.querySelector('.hint'));
   }
 });
 
