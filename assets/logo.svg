@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="PEALO">
+  <circle cx="60" cy="60" r="58" fill="#2f4a2a"/>
+  <!-- servidor -->
+  <rect x="38" y="34" width="44" height="52" rx="5" fill="#f4ecd8"/>
+  <rect x="44" y="42" width="32" height="8" rx="2" fill="#2f4a2a"/>
+  <rect x="44" y="56" width="32" height="8" rx="2" fill="#2f4a2a"/>
+  <rect x="44" y="70" width="32" height="8" rx="2" fill="#2f4a2a"/>
+  <circle cx="71" cy="46" r="2" fill="#c8a04a"/>
+  <circle cx="71" cy="60" r="2" fill="#c8a04a"/>
+  <circle cx="71" cy="74" r="2" fill="#b3261e"/>
+  <!-- laço -->
+  <ellipse cx="60" cy="60" rx="40" ry="16" fill="none" stroke="#c8a04a" stroke-width="5" transform="rotate(-18 60 60)"/>
+  <path d="M96 46 C108 38, 110 22, 98 14" fill="none" stroke="#c8a04a" stroke-width="5" stroke-linecap="round"/>
+</svg>
