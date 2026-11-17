@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PEALO · CESUP</title>
-<meta name="description" content="PEALO: Pronta Equipe de Atendimento e Liberação de Ocorrências do CESUP. Sistema de Registro de Incidentes do datacenter, versão 6.0.">
+<meta name="description" content="PEALO: Pronta Equipe de Atendimento e Liberação de Ocorrências do CESUP. Sistema de Registro de Incidentes do datacenter, versão 6.1.">
 <meta name="theme-color" content="#2f4a2a">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
@@ -42,7 +42,7 @@
   <section class="hero">
     <div class="wrap hero-inner">
       <div>
-        <p class="eyebrow">CESUP / UFRGS · Versão 6.0</p>
+        <p class="eyebrow">CESUP / UFRGS · Versão 6.1</p>
         <h1>Incidente laçado<br>antes de disparar.</h1>
         <p class="lead">
           <strong>PEALO</strong> é a <strong>P</strong>ronta <strong>E</strong>quipe de
@@ -82,7 +82,7 @@
         <div class="channel on"><span class="dot"></span><div><h3>Telegram</h3><p>Canal principal. Texto, áudio, foto, vídeo e documento. A conta é vinculada pelo próprio número de celular.</p></div></div>
         <div class="channel on"><span class="dot"></span><div><h3>Painel web</h3><p>Login com Google. Registro, atendimento, resolução, inventário e administração.</p></div></div>
         <div class="channel on"><span class="dot"></span><div><h3>Zabbix</h3><p>Monitora a infraestrutura e abre o chamado por webhook. A recuperação fecha automaticamente.</p></div></div>
-        <div class="channel off"><span class="dot"></span><div><h3>WhatsApp <em>desligado</em></h3><p>Integração pronta, mas a Meta bloqueou a conta de desenvolvedor. <a href="#whatsapp">Entenda</a>.</p></div></div>
+        <div class="channel on"><span class="dot"></span><div><h3>WhatsApp</h3><p>Integração pela Cloud API da Meta. Texto, áudio, foto, vídeo e documento, com as mesmas regras do Telegram.</p></div></div>
       </div>
     </div>
     <div class="stats">
@@ -200,24 +200,6 @@
     <p class="small"><a href="assets/c4-v6.1.html" target="_blank">Abrir o C4 em tela cheia ↗</a></p>
   </section>
 
-  <!-- WHATSAPP -->
-  <section id="whatsapp" class="band">
-    <div class="wrap section two-col">
-      <div>
-        <p class="eyebrow">Canal desligado</p>
-        <h2>Por que o WhatsApp está fora</h2>
-        <p class="muted">A integração está pronta e testada. Basta reativar quando houver uma conta verificada.</p>
-      </div>
-      <ol class="sprints">
-        <li><b>14/11</b><span>App Meta e webhook configurados; recebimento testado de ponta a ponta.</span></li>
-        <li><b>14/11</b><span>Envio descartado pela Meta: exige empresa verificada (CNPJ).</span></li>
-        <li><b>15/11</b><span>Telegram adotado como canal de entrada e de envio.</span></li>
-        <li><b>17/11</b><span>Meta bloqueou a conta de desenvolvedor; WhatsApp desligado.</span></li>
-        <li><b>Para voltar</b><span>Contestar o bloqueio ou usar um portfólio verificado do CESUP/UFRGS e publicar o webhook numa URL fixa.</span></li>
-      </ol>
-    </div>
-  </section>
-
   <!-- TRAJETÓRIA -->
   <section id="trajetoria" class="wrap section">
     <p class="eyebrow">Trajetória</p>
@@ -247,7 +229,7 @@
       </details>
       <details>
         <summary><span class="h-n">06</span><span class="h-t"><time>17 nov</time><strong>C4 Model v6.0 e simulação</strong></span></summary>
-        <p>Telegram como canal principal, WhatsApp desligado, Whisper local, anexos de foto, vídeo e documento, e-mail com os arquivos do chamado, Zabbix 7.0 abrindo e fechando chamados, CI no GitHub Actions e 151 testes automatizados.</p>
+        <p>Telegram como canal principal, Whisper local, anexos de foto, vídeo e documento, e-mail com os arquivos do chamado, Zabbix 7.0 abrindo e fechando chamados, CI no GitHub Actions e 151 testes automatizados.</p>
       </details>
       <details open>
         <summary><span class="h-n final">07</span><span class="h-t"><time>17 nov</time><strong>C4 Model v6.1 · versão final</strong></span></summary>
