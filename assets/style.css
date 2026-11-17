@@ -56,7 +56,13 @@ code { font-family: ui-monospace, Consolas, monospace; }
 nav { display: flex; gap: 20px; }
 nav a { text-decoration: none; font-size: .92rem; color: var(--muted); }
 nav a:hover { color: var(--ink); }
-@media (max-width: 640px) { nav { display: none; } }
+@media (max-width: 640px) {
+  .topbar-inner { flex-wrap: wrap; height: auto; padding: 10px 0 0; row-gap: 6px; }
+  nav { width: 100%; gap: 18px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+  nav::-webkit-scrollbar { display: none; }
+  nav a { white-space: nowrap; }
+  section[id] { scroll-margin-top: 100px; }
+}
 
 /* hero */
 .hero { padding: 80px 0 56px; }
@@ -193,8 +199,8 @@ figcaption { margin-top: 8px; font-size: .88rem; color: var(--muted); text-align
 .channel.off { border-style: dashed; }
 .channel.off .dot { background: transparent; border: 2px solid var(--muted); box-shadow: none; }
 
-.video { margin-top: 24px; border-radius: 14px; overflow: hidden; border: 1px solid #3a4a34; background: #000; aspect-ratio: 16 / 9; }
-.video video { width: 100%; height: 100%; display: block; }
+.video { margin-top: 24px; border-radius: 14px; overflow: hidden; border: 1px solid #3a4a34; background: #000; max-width: 100%; }
+.video video { width: 100%; max-width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; display: block; }
 .chapters { margin: 20px 0 0; padding-left: 1.3em; columns: 2 260px; column-gap: 32px; font-size: .95rem; opacity: .85; }
 .chapters li { margin-bottom: 6px; break-inside: avoid; }
 
@@ -214,7 +220,8 @@ figcaption { margin-top: 8px; font-size: .88rem; color: var(--muted); text-align
 .examples code { color: var(--green); font-size: .92rem; }
 .examples span { color: var(--muted); font-size: .88rem; }
 
-.c4-frame { margin-top: 24px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); height: min(78vh, 760px); background: #12141c; }
+.c4-frame { margin-top: 24px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); height: clamp(480px, 78vh, 760px); background: #12141c; }
+@media (max-width: 560px) { .c4-frame { height: 70vh; min-height: 420px; } }
 .c4-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
 
 .history { margin-top: 28px; display: grid; gap: 10px; }
