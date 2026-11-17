@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PEALO · CESUP</title>
-<meta name="description" content="PEALO: Pronta Equipe de Atendimento e Liberação de Ocorrências do CESUP. O Sistema de Registro de Incidentes do datacenter, contado pelas apresentações do projeto.">
+<meta name="description" content="PEALO: Pronta Equipe de Atendimento e Liberação de Ocorrências do CESUP. Sistema de Registro de Incidentes do datacenter, versão 6.0.">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,10 +20,11 @@
       <span>PEALO <small>CESUP</small></span>
     </a>
     <nav>
-      <a href="#trajetoria">Trajetória</a>
-      <a href="#prioridade">Prioridade</a>
+      <a href="#simulacao">Simulação</a>
+      <a href="#ciclo">Ciclo</a>
+      <a href="#sla">SLA</a>
       <a href="#arquitetura">Arquitetura</a>
-      <a href="#pesquisa">Pesquisa</a>
+      <a href="#trajetoria">Trajetória</a>
     </nav>
   </div>
 </header>
@@ -33,18 +34,18 @@
   <section class="hero">
     <div class="wrap hero-inner">
       <div>
-        <p class="eyebrow">CESUP / UFRGS · PPGES / UNIPAMPA</p>
+        <p class="eyebrow">CESUP / UFRGS · Versão 6.0</p>
         <h1>Incidente laçado<br>antes de disparar.</h1>
         <p class="lead">
           <strong>PEALO</strong> é a <strong>P</strong>ronta <strong>E</strong>quipe de
           <strong>A</strong>tendimento e <strong>L</strong>iberação de
-          <strong>O</strong>corrências do CESUP, apoiada pelo <strong>Sistema de Registro de
-          Incidentes do datacenter</strong>: captura multimodal, correlação inteligente e
-          tudo on-premises.
+          <strong>O</strong>corrências do CESUP. Com o <strong>Sistema de Registro de
+          Incidentes</strong>, qualquer pessoa relata um problema por texto, áudio, foto,
+          vídeo ou documento, e a equipe é avisada na hora.
         </p>
         <div class="cta">
-          <a class="btn primary" href="#trajetoria">Ver a trajetória</a>
-          <a class="btn ghost" href="https://github.com/douglaslautert/registro-incidentes-datacenter">Repositório</a>
+          <a class="btn primary" href="#simulacao">Ver a simulação</a>
+          <a class="btn ghost" href="#arquitetura">Arquitetura C4</a>
         </div>
       </div>
       <img class="hero-logo" src="assets/logo.svg" alt="Logo PEALO: um laço envolvendo um servidor">
@@ -61,279 +62,192 @@
     </div>
   </section>
 
-  <!-- PROBLEMA -->
+  <!-- CANAIS -->
   <section class="wrap section">
     <div class="two-col">
       <div>
-        <p class="eyebrow">O problema</p>
-        <h2>“Quantas falhas de fonte tivemos em 2026, e em quais equipamentos?”</h2>
-        <p class="muted">Sem registro estruturado, a resposta depende da memória das pessoas.</p>
+        <p class="eyebrow">Como funciona</p>
+        <h2>Relata por onde estiver. A PEALO fica sabendo.</h2>
+        <p class="muted">Cada relato vira um chamado com protocolo, criticidade e prazo. Alertas do Zabbix abrem chamados sozinhos e os fecham quando o problema se recupera.</p>
       </div>
-      <div class="cards three">
-        <div class="card"><h3>Registro lento</h3><p>Técnicos perdem minutos em formulários enquanto o incidente ocorre.</p></div>
-        <div class="card"><h3>Alertas duplicados</h3><p>Zabbix e registros manuais geram chamados repetidos, sem correlação.</p></div>
-        <div class="card"><h3>Sem vigia externo</h3><p>Nenhum alerta quando o datacenter fica inacessível fora do horário.</p></div>
+      <div class="cards">
+        <div class="channel on"><span class="dot"></span><div><h3>Telegram</h3><p>Canal principal. Texto, áudio, foto, vídeo e documento. A conta é vinculada pelo próprio número de celular.</p></div></div>
+        <div class="channel on"><span class="dot"></span><div><h3>Painel web</h3><p>Login com Google. Registro, atendimento, resolução, inventário e administração.</p></div></div>
+        <div class="channel on"><span class="dot"></span><div><h3>Zabbix</h3><p>Monitora a infraestrutura e abre o chamado por webhook. A recuperação fecha automaticamente.</p></div></div>
+        <div class="channel off"><span class="dot"></span><div><h3>WhatsApp <em>desligado</em></h3><p>Integração pronta, mas a Meta bloqueou a conta de desenvolvedor. <a href="#whatsapp">Entenda</a>.</p></div></div>
       </div>
     </div>
     <div class="stats">
-      <div><b>&lt; 30 s</b><span>para registrar por voz, foto, QR ou texto</span></div>
-      <div><b>15</b><span>containers, instalados com um comando</span></div>
-      <div><b>800+</b><span>verificações automatizadas, 0 falhas</span></div>
-      <div><b>0</b><span>dados saindo da UFRGS</span></div>
+      <div><b>151</b><span>testes automatizados no backend e no bot</span></div>
+      <div><b>7</b><span>contêineres: db · redis · api · worker · beat · bot · web</span></div>
+      <div><b>4</b><span>migrações Alembic, aplicadas na subida da API</span></div>
+      <div><b>0</b><span>áudios enviados para fora: Whisper roda local</span></div>
     </div>
   </section>
 
-  <!-- TRAJETÓRIA -->
-  <section id="trajetoria" class="band">
+  <!-- SIMULAÇÃO -->
+  <section id="simulacao" class="band dark">
     <div class="wrap section">
-      <p class="eyebrow">Trajetória</p>
-      <h2>Cinco apresentações, em ordem</h2>
-      <p class="muted">Cada etapa do projeto foi apresentada em um deck. Elas aparecem aqui na sequência em que foram produzidas.</p>
-
-      <ol class="timeline">
-        <li><a href="#ap1"><time>27 out · 07:09</time><strong>Registro de Incidentes com IA</strong><span>Três caminhos com IA, comparados</span></a></li>
-        <li><a href="#ap2"><time>27 out · 07:09</time><strong>Sistema de Registro de Incidentes</strong><span>Proposta, arquitetura e Sprints 0–6</span></a></li>
-        <li><a href="#ap3"><time>27 out · 07:32</time><strong>Versão revisada</strong><span>Entra a implantação em três comandos</span></a></li>
-        <li><a href="#ap4"><time>27 out · 07:35</time><strong>Versão fonte grande</strong><span>Texto enxuto para leitura na sala</span></a></li>
-        <li><a href="#ap5"><time>03 nov · 10:33</time><strong>O que mudou no sistema</strong><span>10 pull requests em uma semana</span></a></li>
+      <p class="eyebrow">Simulação de ponta a ponta · 4 min 18 s</p>
+      <h2>Um dia de incidentes, do relato à resolução</h2>
+      <p>API e bot rodando com o código real em ambiente isolado. Usuários fictícios relatam pelo WhatsApp e pelo Telegram, o técnico atende pelo painel, o Zabbix dispara um alerta e o SLA estoura.</p>
+      <div class="video">
+        <video controls preload="none" poster="assets/simulacao-poster.jpg">
+          <source src="assets/simulacao.mp4" type="video/mp4">
+          Seu navegador não reproduz vídeo. <a href="assets/simulacao.mp4">Baixe o arquivo</a>.
+        </video>
+      </div>
+      <ol class="chapters">
+        <li>Chamado aberto por texto, com foto enviada depois</li>
+        <li>Áudio vira chamado ALTA e um PDF é anexado</li>
+        <li>Consulta e cobrança pelo bot</li>
+        <li>Cadastro de equipamento por palavras-chave</li>
+        <li>Vinculação da conta no Telegram</li>
+        <li>Arquivo antes do relato e vídeo com fala</li>
+        <li>Técnico assume pela web e resolve pelo Telegram</li>
+        <li>Alerta do Zabbix e SLA estourado</li>
       </ol>
     </div>
   </section>
 
-  <!-- AP1 -->
-  <section id="ap1" class="wrap section deck">
-    <header class="deck-head">
-      <span class="deck-n">01</span>
-      <div>
-        <p class="eyebrow">Apresentação 1 · 16 slides</p>
-        <h2>Registro de Incidentes com IA</h2>
-        <p class="muted">Três implementações possíveis, comparadas lado a lado, e uma recomendação.</p>
-      </div>
-    </header>
-
-    <h3 class="sub">O sistema funciona em três ciclos</h3>
-    <div class="cards three">
-      <div class="card"><span class="tag">B1 · Resposta</span><h3>Volta ao serviço</h3><p>Falha → alerta → atendimento. Minutos a horas. A IA agrupa alertas e sugere solução.</p></div>
-      <div class="card"><span class="tag">B2 · Aprendizado</span><h3>Falha não se repete</h3><p>Histórico → causa → prevenção. Semanas a meses. A IA responde perguntas sobre o histórico.</p></div>
-      <div class="card"><span class="tag">R1 · Adoção</span><h3>Equipe registra bem</h3><p>Registro fácil → relatório útil → mais registro. A IA resume e pré-preenche.</p></div>
+  <!-- CICLO -->
+  <section id="ciclo" class="wrap section">
+    <p class="eyebrow">A lida de um chamado</p>
+    <h2>Do relato à liberação</h2>
+    <p class="muted">Todo chamado nasce ABERTO. O primeiro técnico que assume fica com ele; o segundo recebe recusa imediata. Chamado resolvido não reabre.</p>
+    <ol class="states">
+      <li><span class="tag">Bombeada</span><b>ABERTO</b><p>Relato recebido, criticidade inferida e prazo calculado. O grupo de atendimento é avisado.</p></li>
+      <li><span class="tag">Pealo</span><b>EM_ATENDIMENTO</b><p>Um técnico assume. Fica registrado quem e quando.</p></li>
+      <li><span class="tag">Liberação</span><b>RESOLVIDO</b><p>O técnico descreve o que foi feito. Quem abriu é avisado. O MTTR é calculado.</p></li>
+    </ol>
+    <div class="state-alt">
+      <span class="tag red">Disparada</span>
+      <p><b>EM_ATRASO</b>: se o prazo vence com o chamado ainda ABERTO, o SLA Monitor (a cada 5 min) escala para a coordenação. O chamado continua esperando um técnico assumir.</p>
     </div>
 
-    <h3 class="sub">As três opções</h3>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Critério</th><th>C · GLPI + Zabbix + NetBox com IA</th><th>D · Zabbix + Keep + GLPI</th><th>E · Freshservice (Freddy AI)</th></tr></thead>
-        <tbody>
-          <tr><td>Ciclos com IA</td><td>B1 · B2 · R1</td><td>B1 · R1</td><td>B1 · B2 · R1</td></tr>
-          <tr><td>Modelo</td><td>OpenAI ou local</td><td>Qualquer um</td><td>Freddy</td></tr>
-          <tr><td>O que sai da universidade</td><td>Parte</td><td>Nada</td><td>Tudo</td></tr>
-          <tr><td>Custo</td><td>Plugin + desenvolvimento</td><td>Open source</td><td>Por técnico</td></tr>
-          <tr><td>Risco</td><td>Chamados na OpenAI</td><td>Sem IA no histórico</td><td>Dependência</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="callout">
-      <p class="eyebrow">Recomendação</p>
-      <h3>Opção C, com modelo local</h3>
-      <p>IA nos três ciclos e nenhum dado fora da universidade. Fase 1: GLPI + Zabbix (MVP). Fase 2: + NetBox. Fase 3: + assistente de IA com modelo local.</p>
-      <ul class="pills">
-        <li>A IA sugere; a pessoa decide</li>
-        <li>Somente leitura</li>
-        <li>Mascarar antes de enviar</li>
-        <li>Preferir modelo local</li>
-        <li>Resposta auditável</li>
-        <li>IA só depois do MVP</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- AP2 -->
-  <section id="ap2" class="band">
-    <div class="wrap section deck">
-      <header class="deck-head">
-        <span class="deck-n">02</span>
-        <div>
-          <p class="eyebrow">Apresentação 2 · 12 slides</p>
-          <h2>Sistema de Registro de Incidentes</h2>
-          <p class="muted">Captura multimodal · Correlação inteligente · 100% on-premises.</p>
-        </div>
-      </header>
-
-      <h3 class="sub">A solução</h3>
-      <div class="cards three">
-        <div class="card"><h3>Captura multimodal</h3><p>Voz, foto, QR Code e texto: registro em menos de 30 segundos.</p></div>
-        <div class="card"><h3>Correlação automática</h3><p>Embeddings 1024d, score topológico + semântico, Zabbix integrado.</p></div>
-        <div class="card"><h3>Priorização P1–P4</h3><p>I×U×C. Segurança de pessoas sempre P1. Escalonamento automático.</p></div>
-        <div class="card"><h3>Vigia externo 4G</h3><p>Dead man's switch via GSM: SMS se o datacenter ficar inacessível.</p></div>
-        <div class="card"><h3>100% on-premises</h3><p>Nenhum dado sai da UFRGS. FastAPI + PostgreSQL + pgvector.</p></div>
-        <div class="card"><h3>MTTA/MTTR mensuráveis</h3><p>Métricas para as perguntas de pesquisa QP1, QP2 e QP3.</p></div>
-      </div>
-
-      <h3 class="sub">Sprints entregues</h3>
-      <ol class="sprints">
-        <li><b>Sprint 0</b><span>Infraestrutura base: 15 containers, schema SQL com vector(1024), Keycloak, Nginx, Grafana, Zabbix e GLPI.</span></li>
-        <li><b>Sprint 1</b><span>Zabbix: webhook PROBLEM/RECOVERY, cliente JSON-RPC, model de topologia.</span></li>
-        <li><b>Sprint 2</b><span>Banco: SQLAlchemy assíncrono, 7 models, migrations Alembic, fallback em memória.</span></li>
-        <li><b>Sprint 3</b><span>Celery: PWA React inicial, tarefas de e-mail e SMS, processar_evento.</span></li>
-        <li><b>Sprint 4 · MVP</b><span>Motor P1–P4, correlação e escalonamento, vigia externo GSM (Raspberry Pi + modem 4G).</span></li>
-        <li><b>Sprint 5</b><span>Captura multimodal: foto/vídeo no S3, voz com Whisper, QR Code, embeddings 1024d.</span></li>
-        <li><b>Sprint 6</b><span>Persistência real e métricas: MTTA/MTTR em SQL, 800+ verificações, 84 req/s em concorrência.</span></li>
-      </ol>
-
-      <h3 class="sub">Demonstração</h3>
-      <ol class="flow">
-        <li>Técnico escaneia o QR do servidor</li>
-        <li>Fotografa o rack com problema</li>
-        <li>Sistema classifica P1 automaticamente</li>
-        <li>Plantonista recebe o alerta e faz ACK</li>
-        <li>Zabbix correlaciona e anexa ao chamado</li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- AP3 -->
-  <section id="ap3" class="wrap section deck">
-    <header class="deck-head">
-      <span class="deck-n">03</span>
-      <div>
-        <p class="eyebrow">Apresentação 3 · 13 slides</p>
-        <h2>Versão revisada</h2>
-        <p class="muted">O mesmo conteúdo, com texto revisado e um slide novo: como colocar o sistema no ar.</p>
-      </div>
-    </header>
-    <h3 class="sub">Do zero ao ar em três comandos</h3>
-    <div class="cards three">
-      <div class="card"><span class="tag">1 · Configurar</span><code class="cmd">cp .env.example .env</code><p>Senhas e parâmetros em um único arquivo, fora do git.</p></div>
-      <div class="card"><span class="tag">2 · Instalar</span><code class="cmd">make setup</code><p>15 containers, bancos, Keycloak, GLPI, Zabbix e S3 configurados em 15 a 30 min.</p></div>
-      <div class="card"><span class="tag">3 · Publicar na rede</span><code class="cmd">make rede-local</code><p>Troca localhost pelo IP do servidor e ativa HTTPS para câmera e microfone.</p></div>
-    </div>
-    <p class="muted small">Cada etapa pode ser repetida sozinha: <code>make glpi-setup</code>, <code>make zabbix-setup</code>, <code>make garage-setup</code>.</p>
-  </section>
-
-  <!-- AP4 -->
-  <section id="ap4" class="band">
-    <div class="wrap section deck">
-      <header class="deck-head">
-        <span class="deck-n">04</span>
-        <div>
-          <p class="eyebrow">Apresentação 4 · 20 slides</p>
-          <h2>Versão fonte grande</h2>
-          <p class="muted">Feita para ser lida do fundo da sala: frases curtas, menos números por slide.</p>
-        </div>
-      </header>
-      <div class="compare">
-        <div>
-          <p class="eyebrow">Na revisada</p>
-          <p>“Fórmula I×U×C com 12 sintomas mapeados”</p>
-          <p>“Dead man's switch via GSM: SMS se o datacenter ficar inacessível”</p>
-          <p>“Nenhum dado sai da UFRGS · FastAPI + PostgreSQL + pgvector”</p>
-        </div>
-        <div>
-          <p class="eyebrow">Na fonte grande</p>
-          <p>“Impacto × urgência × confiança”</p>
-          <p>“SMS se o datacenter cair”</p>
-          <p>“On-premises: nenhum dado sai da UFRGS”</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- AP5 -->
-  <section id="ap5" class="wrap section deck">
-    <header class="deck-head">
-      <span class="deck-n">05</span>
-      <div>
-        <p class="eyebrow">Apresentação 5 · 11 slides</p>
-        <h2>O que mudou no sistema</h2>
-        <p class="muted">Instalação, rede local e relato por áudio, vídeo e foto. 10 pull requests integrados ao main entre 23 e 30 de outubro de 2026.</p>
-      </div>
-    </header>
-
-    <div class="stats compact">
-      <div><b>4</b><span>Instalação: banco alinhado à API, GLPI, make install / uninstall</span></div>
-      <div><b>3</b><span>Rede local: HTTPS, servidor no WSL2, PWA com os serviços</span></div>
-      <div><b>2</b><span>Captura: áudio e vídeo viram chamado, evidências anexadas</span></div>
-      <div><b>2</b><span>Artefato: README no formato da SBC e licença MIT</span></div>
-    </div>
-
-    <h3 class="sub">Da fala ao chamado</h3>
+    <h3 class="sub">Do relato ao chamado, no bot</h3>
     <ol class="flow">
-      <li><b>Gravar</b> áudio ou vídeo no app</li>
-      <li><b>Transcrever</b> com faster-whisper no servidor</li>
-      <li><b>Interpretar</b> ativo, sala, rack, risco e prioridade</li>
-      <li><b>Revisar</b>: o técnico confirma os campos</li>
-      <li><b>Chamado</b> com o áudio e o vídeo anexados</li>
+      <li><b>Recebe</b> a mensagem no Telegram e identifica a pessoa pelo chat</li>
+      <li><b>Transcreve</b> áudio e a fala dos vídeos com Whisper local</li>
+      <li><b>Interpreta</b> a intenção: registrar, consultar, resolver ou cadastrar</li>
+      <li><b>Registra</b> na API com o canal e a criticidade</li>
+      <li><b>Anexa</b> arquivos enviados até 10 min depois</li>
     </ol>
-    <blockquote>
-      “…um superaquecimento dentro da sala T4.”
-      <cite>Relato real gravado no app: preencheu sala T4 e prioridade P1. Antes, os campos ficavam vazios.</cite>
-    </blockquote>
-
-    <h3 class="sub">O que ainda falta</h3>
-    <ol class="sprints">
-      <li><b>1</b><span>Pesquisar prioridades de incidentes para ajustar a indicação de P1 a P4.</span></li>
-      <li><b>2</b><span>HTTPS confiável nos celulares, com uma autoridade certificadora local.</span></li>
-      <li><b>3</b><span>Cadastrar as salas e os ativos reais, para o relato sugerir também o ativo.</span></li>
-    </ol>
+    <div class="examples">
+      <div><code>"água pingando no rack"</code><span>registra · ALTA</span></div>
+      <div><code>"sistema lento"</code><span>registra · BAIXA</span></div>
+      <div><code>"o servidor não está funcionando"</code><span>registra (a negação anula "funcionando")</span></div>
+      <div><code>"ainda não foi resolvido"</code><span>cobrança, não resolução</span></div>
+      <div><code>"patrimônio 123456, tipo switch, local rack 2"</code><span>cadastra equipamento</span></div>
+    </div>
   </section>
 
-  <!-- PRIORIDADE -->
-  <section id="prioridade" class="band">
+  <!-- SLA -->
+  <section id="sla" class="band">
     <div class="wrap section">
-      <p class="eyebrow">Como a PEALO prioriza</p>
-      <h2>Motor P1–P4 e escalonamento</h2>
-      <p class="muted">Prioridade = impacto × urgência × confiança. Risco a pessoas é sempre P1; água, curto ou falha de fonte vão ao máximo. Sem ACK no prazo, o plantão é reacionado.</p>
+      <p class="eyebrow">Criticidade e prazos</p>
+      <h2>Três níveis, um prazo para cada</h2>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Prioridade</th><th>Prazo para ACK</th><th>Acionamento</th></tr></thead>
+          <thead><tr><th>Criticidade</th><th>Prazo padrão</th><th>Severidade no Zabbix</th></tr></thead>
           <tbody>
-            <tr><td><span class="sev s1">P1</span></td><td>10 min</td><td>Plantão por e-mail e SMS</td></tr>
-            <tr><td><span class="sev s2">P2</span></td><td>30 min</td><td>Plantão por e-mail e SMS</td></tr>
-            <tr><td><span class="sev s3">P3</span></td><td>120 min</td><td>Reescalonamento por e-mail</td></tr>
-            <tr><td><span class="sev s4">P4</span></td><td>sem limite</td><td>Sem escalonamento</td></tr>
+            <tr><td><span class="sev s1">ALTA</span></td><td>2 horas</td><td>Disaster, High</td></tr>
+            <tr><td><span class="sev s3">MÉDIA</span></td><td>24 horas (1 dia útil)</td><td>Average</td></tr>
+            <tr><td><span class="sev s4">BAIXA</span></td><td>72 horas (3 dias úteis)</td><td>Warning, Information, Not classified</td></tr>
           </tbody>
         </table>
       </div>
-      <div class="formula">
-        <p class="eyebrow">Correlação humano + Zabbix</p>
-        <code>S = 0,30·topologia + 0,20·tempo + 0,20·local + 0,30·semântica</code>
-        <p class="muted small">S ≥ 0,75 anexa ao incidente existente · S ≥ 0,45 sugere a ligação ao técnico.</p>
+      <p class="muted small">Os prazos são editáveis pelo administrador e valem só para chamados criados depois da mudança.</p>
+
+      <h3 class="sub">Quem é avisado</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Evento</th><th>Recebe</th><th>Por onde</th></tr></thead>
+          <tbody>
+            <tr><td>Chamado criado</td><td>Grupo de atendimento</td><td>E-mail, Telegram, painel</td></tr>
+            <tr><td>Arquivo anexado</td><td>Grupo de atendimento</td><td>E-mail com os arquivos, Telegram</td></tr>
+            <tr><td>Chamado resolvido</td><td>Quem abriu</td><td>E-mail, Telegram, painel</td></tr>
+            <tr><td>SLA estourado</td><td>Coordenação; administradores no Telegram</td><td>E-mail, Telegram, painel</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub">Anexos no chamado</h3>
+      <div class="cards three">
+        <div class="card"><h3>Foto</h3><p>JPEG, PNG, WebP · até 10 MB. Em cadastro de equipamento, passa pelo OCR da plaqueta.</p></div>
+        <div class="card"><h3>Vídeo</h3><p>MP4, 3GP, MOV · até 25 MB. A fala é transcrita e o vídeo fica anexado.</p></div>
+        <div class="card"><h3>Documento</h3><p>PDF, DOC/DOCX, XLS/XLSX, ODT/ODS, TXT, CSV · até 25 MB, com o nome original.</p></div>
       </div>
     </div>
   </section>
 
   <!-- ARQUITETURA -->
   <section id="arquitetura" class="wrap section">
-    <p class="eyebrow">Arquitetura</p>
-    <h2>Modelo C4</h2>
-    <p class="muted">Planejamento das Sprints 0–9 comparado ao que já está no main. Clique para ampliar.</p>
-    <figure>
-      <a href="assets/c4-nivel1.svg" target="_blank"><img src="assets/c4-nivel1.svg" alt="C4 nível 1: contexto do Sistema de Registro de Incidentes, com pessoas, Zabbix, GLPI, LDAP, cluster GPU, e-mail e modem GSM" loading="lazy"></a>
-      <figcaption>Nível 1 · Contexto do sistema</figcaption>
-    </figure>
-    <figure>
-      <a href="assets/c4-nivel2.svg" target="_blank"><img src="assets/c4-nivel2.svg" alt="C4 nível 2: contêineres Nginx, PWA, API, Keycloak, Grafana, banco, mídias, fila, worker e agendador" loading="lazy"></a>
-      <figcaption>Nível 2 · Contêineres</figcaption>
-    </figure>
+    <p class="eyebrow">Arquitetura · C4 Model v6.0</p>
+    <h2>Clique nas caixas para descer de nível</h2>
+    <p class="muted">Do contexto (N1) aos contêineres (N2), componentes (N3) e detalhes de cada componente (N4), com rotas, regras e casos testados.</p>
+    <div class="c4-frame">
+      <iframe src="assets/c4-v6.html" title="C4 Model v6.0 interativo do Sistema de Registro de Incidentes" loading="lazy"></iframe>
+    </div>
+    <p class="small"><a href="assets/c4-v6.html" target="_blank">Abrir o C4 em tela cheia ↗</a></p>
   </section>
 
-  <!-- PESQUISA -->
-  <section id="pesquisa" class="band dark">
-    <div class="wrap section">
-      <p class="eyebrow">Perguntas de pesquisa · PPGES</p>
-      <h2>O que o projeto quer provar</h2>
-      <div class="cards three">
-        <div class="card dark-card"><span class="tag">QP1</span><p>A captura multimodal reduz o tempo de registro para menos de 30 s?</p></div>
-        <div class="card dark-card"><span class="tag">QP2</span><p>A correlação humano + Zabbix reduz duplicatas com precisão ≥ 85%?</p></div>
-        <div class="card dark-card"><span class="tag">QP3</span><p>A priorização explicável reduz acionamentos desnecessários em ≥ 80%?</p></div>
+  <!-- WHATSAPP -->
+  <section id="whatsapp" class="band">
+    <div class="wrap section two-col">
+      <div>
+        <p class="eyebrow">Canal desligado</p>
+        <h2>Por que o WhatsApp está fora</h2>
+        <p class="muted">A integração está pronta e testada. Basta reativar quando houver uma conta verificada.</p>
       </div>
+      <ol class="sprints">
+        <li><b>14/11</b><span>App Meta e webhook configurados; recebimento testado de ponta a ponta.</span></li>
+        <li><b>14/11</b><span>Envio descartado pela Meta: exige empresa verificada (CNPJ).</span></li>
+        <li><b>15/11</b><span>Telegram adotado como canal de entrada e de envio.</span></li>
+        <li><b>17/11</b><span>Meta bloqueou a conta de desenvolvedor; WhatsApp desligado.</span></li>
+        <li><b>Para voltar</b><span>Contestar o bloqueio ou usar um portfólio verificado do CESUP/UFRGS e publicar o webhook numa URL fixa.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- TRAJETÓRIA -->
+  <section id="trajetoria" class="wrap section">
+    <p class="eyebrow">Trajetória</p>
+    <h2>Como chegamos à v6.0</h2>
+    <p class="muted">As apresentações registram as etapas do projeto. A definição em vigor é a v6.0, acima; ideias das primeiras versões, como as prioridades P1–P4 e o vigia externo 4G, ficaram fora dela.</p>
+
+    <div class="history">
+      <details>
+        <summary><span class="h-n">01</span><span class="h-t"><time>27 out</time><strong>Registro de Incidentes com IA</strong></span></summary>
+        <p>Três caminhos com IA comparados: GLPI + Zabbix + NetBox com camada de IA, Zabbix + Keep + GLPI, e Freshservice. Recomendação: a camada de IA com modelo local, para nenhum dado sair da universidade. Seis salvaguardas: a IA sugere e a pessoa decide; somente leitura; mascarar antes de enviar; preferir modelo local; resposta auditável; IA só depois do MVP.</p>
+      </details>
+      <details>
+        <summary><span class="h-n">02</span><span class="h-t"><time>27 out</time><strong>Sistema de Registro de Incidentes</strong></span></summary>
+        <p>A proposta original: captura multimodal em menos de 30 s, correlação com o Zabbix por embeddings, prioridade P1–P4, vigia externo por 4G e tudo on-premises. Sprints 0 a 6 entregues, com 800+ verificações automatizadas. Perguntas de pesquisa sobre tempo de registro (QP1), duplicatas (QP2) e acionamentos desnecessários (QP3).</p>
+      </details>
+      <details>
+        <summary><span class="h-n">03</span><span class="h-t"><time>27 out</time><strong>Versão revisada</strong></span></summary>
+        <p>Mesmo conteúdo, texto revisado e um slide novo: do zero ao ar em três comandos (<code>cp .env.example .env</code>, <code>make setup</code>, <code>make rede-local</code>).</p>
+      </details>
+      <details>
+        <summary><span class="h-n">04</span><span class="h-t"><time>27 out</time><strong>Versão fonte grande</strong></span></summary>
+        <p>Feita para leitura do fundo da sala: frases curtas e menos números por slide.</p>
+      </details>
+      <details>
+        <summary><span class="h-n">05</span><span class="h-t"><time>03 nov</time><strong>O que mudou no sistema</strong></span></summary>
+        <p>10 pull requests em uma semana: instalação com <code>make install</code>/<code>uninstall</code>, rede local com HTTPS, relato por áudio e vídeo com transcrição local, evidências anexadas ao chamado e README no formato da SBC com licença MIT.</p>
+      </details>
+      <details open>
+        <summary><span class="h-n final">06</span><span class="h-t"><time>17 nov</time><strong>C4 Model v6.0 e simulação · definição final</strong></span></summary>
+        <p>Telegram como canal principal, WhatsApp desligado, Whisper local, anexos de foto, vídeo e documento, e-mail com os arquivos do chamado, Zabbix 7.0 abrindo e fechando chamados, CI no GitHub Actions e 151 testes automatizados.</p>
+      </details>
     </div>
   </section>
 </main>
 
 <footer class="wrap footer">
   <p><strong>PEALO</strong> · Pronta Equipe de Atendimento e Liberação de Ocorrências · CESUP/UFRGS</p>
-  <p class="muted">Douglas Paim Lautert · PPGES/UNIPAMPA · <a href="https://github.com/douglaslautert/registro-incidentes-datacenter">código no GitHub</a> · licença MIT</p>
+  <p class="muted">Douglas Paim Lautert · PPGES/UNIPAMPA · <a href="https://github.com/douglaslautert/registro-incidentes-datacenter">código no GitHub</a></p>
   <p class="muted">Pealou, resolveu.</p>
 </footer>
 

@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>C4 Model v6.0 — Incidentes CESUP/UFRGS</title>
+<style>
+:root {
+  --bg:#12141c; --canvas:#171a26; --hdr:#0e1018;
+  --border:#252a3a; --text:#dde2f0; --muted:#6a7590; --accent:#4a7cf7;
+  --person-f:#0e2a40; --person-s:#2a7ab8; --person-t:#90ccf5;
+  --sys-f:#0e1e3a; --sys-s:#2a50c0; --sys-t:#90b0f8;
+  --ext-f:#1e1800; --ext-s:#806020; --ext-t:#c8a040;
+  --wa-f:#061a10; --wa-s:#1a8030; --wa-t:#50d870;
+  --web-f:#06101e; --web-s:#1a40a0; --web-t:#70a0f0;
+  --api-f:#061a14; --api-s:#0a7058; --api-t:#40c8a8;
+  --db-f:#160a22; --db-s:#7020b0; --db-t:#c060e8;
+  --que-f:#100618; --que-s:#5820a0; --que-t:#a060d8;
+  --ai-f:#1a0608; --ai-s:#a02020; --ai-t:#e06060;
+  --zbx-f:#1a0a00; --zbx-s:#cc5500; --zbx-t:#ff9944;
+  --tg-f:#071a26;  --tg-s:#2a8bc9;  --tg-t:#7cc4f0;
+  --off-f:#15171c; --off-s:#4a4f5c; --off-t:#7d8496;
+  --arr:#3a4a6a; --arrl:#607090;
+  --glow:rgba(74,124,247,.3);
+  --r:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+header{background:var(--hdr);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;flex-shrink:0}
+#backBtn{background:none;border:1px solid var(--border);color:var(--muted);font-size:12px;padding:4px 10px;border-radius:4px;cursor:pointer;transition:.15s}
+#backBtn:hover{color:var(--text);border-color:var(--muted)}
+#backBtn:disabled{opacity:.3;cursor:default}
+#breadcrumb{flex:1;font-size:12px;color:var(--muted);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#breadcrumb b{color:var(--text)}
+#lvlpill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;background:rgba(74,124,247,.18);color:var(--accent);flex-shrink:0}
+.hint{font-size:11px;color:var(--muted);flex-shrink:0}
+@media(max-width:600px){.hint{display:none}}
+.wrap{flex:1;overflow:auto;position:relative}
+.canvas{position:relative;animation:fi .18s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+svg.arr{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.node{position:absolute;border-radius:var(--r);padding:11px 9px 9px;border:1.5px solid;text-align:center;display:flex;flex-direction:column;align-items:center}
+.node.click{cursor:pointer;transition:transform .12s,box-shadow .12s}
+.node.click:hover{transform:translateY(-2px);box-shadow:0 0 0 3px var(--glow)}
+.ni{font-size:19px;margin-bottom:4px;line-height:1}
+.nn{font-size:11.5px;font-weight:600;line-height:1.3;margin-bottom:3px}
+.nt{font-size:9.5px;font-style:italic;opacity:.7;margin-bottom:4px}
+.nd{font-size:10px;line-height:1.5;opacity:.85}
+.dh{font-size:9px;margin-top:5px;padding:2px 7px;border-radius:8px;background:rgba(255,255,255,.07);opacity:.75}
+.person{background:var(--person-f);border-color:var(--person-s);color:var(--person-t)}
+.sys   {background:var(--sys-f);   border-color:var(--sys-s);   color:var(--sys-t)}
+.ext   {background:var(--ext-f);   border-color:var(--ext-s);   color:var(--ext-t);border-style:dashed}
+.wa    {background:var(--wa-f);    border-color:var(--wa-s);    color:var(--wa-t)}
+.web   {background:var(--web-f);   border-color:var(--web-s);   color:var(--web-t)}
+.api   {background:var(--api-f);   border-color:var(--api-s);   color:var(--api-t)}
+.db    {background:var(--db-f);    border-color:var(--db-s);    color:var(--db-t)}
+.que   {background:var(--que-f);   border-color:var(--que-s);   color:var(--que-t)}
+.ai    {background:var(--ai-f);    border-color:var(--ai-s);    color:var(--ai-t)}
+.zbx   {background:var(--zbx-f);   border-color:var(--zbx-s);   color:var(--zbx-t)}
+.tg    {background:var(--tg-f);    border-color:var(--tg-s);    color:var(--tg-t)}
+.off   {background:var(--off-f);   border-color:var(--off-s);   color:var(--off-t);border-style:dotted;opacity:.8}
+.off .nn::after{content:' (desligado)';font-weight:400;font-size:9.5px}
+.new::before{content:'NOVO v6';position:absolute;top:-8px;right:-6px;font-size:8px;font-weight:700;padding:1px 5px;border-radius:6px;background:#2a8bc9;color:#fff;letter-spacing:.04em}
+.bnd{position:absolute;border:1px dashed var(--border);border-radius:8px}
+.bnd-lbl{position:absolute;top:-9px;left:12px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);background:var(--canvas);padding:0 5px}
+.leg{position:absolute;bottom:14px;left:14px;background:rgba(14,16,24,.88);border:1px solid var(--border);border-radius:var(--r);padding:9px 13px;display:flex;flex-direction:column;gap:5px}
+.li{display:flex;align-items:center;gap:7px;font-size:10.5px;color:var(--muted)}
+.ls{width:13px;height:13px;border-radius:3px;border:1.5px solid;flex-shrink:0}
+/* N4 */
+.n4p{padding:22px;max-width:860px;margin:0 auto}
+.n4p h2{font-size:14px;font-weight:600;margin-bottom:4px;color:var(--text)}
+.n4p .sub{font-size:11px;color:var(--muted);margin-bottom:18px}
+.n4p h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:20px 0 8px}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+th{text-align:left;padding:6px 10px;background:rgba(255,255,255,.04);color:var(--muted);font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
+td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;color:var(--text)}
+tr:hover td{background:rgba(255,255,255,.02)}
+code{font-size:10.5px;color:var(--api-t)}
+.tag{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:7px;margin-right:2px}
+.GET {background:#06180e;color:#50d870} .POST{background:#06101e;color:#70a0f0}
+.PUT {background:#1e1800;color:#c8a040} .DEL {background:#1a0608;color:#e06060}
+.perm{font-size:10px;color:var(--muted);font-style:italic}
+.note{margin-top:14px;padding:9px 13px;border-left:3px solid var(--accent);background:rgba(74,124,247,.07);font-size:11px;color:var(--muted);border-radius:0 4px 4px 0;line-height:1.6}
+.note.zbx{border-left-color:var(--zbx-s);background:rgba(204,85,0,.07)}
+.note.tg{border-left-color:var(--tg-s);background:rgba(42,139,201,.08)}
+.note.off{border-left-color:var(--off-s);background:rgba(120,120,140,.08)}
+.sflow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+.sbox{padding:6px 12px;border-radius:4px;font-size:11px;font-weight:600;border:1.5px solid}
+.sa{background:var(--sys-f);border-color:var(--sys-s);color:var(--sys-t)}
+.se{background:var(--wa-f);border-color:var(--wa-s);color:var(--wa-t)}
+.sr{background:#101800;border-color:#607000;color:#b0d040}
+.sl{background:var(--ai-f);border-color:var(--ai-s);color:var(--ai-t)}
+.sarr{color:var(--arr);font-size:14px}
+pre{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;padding:10px 12px;font-size:10.5px;color:var(--zbx-t);overflow-x:auto;line-height:1.7;margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+  <button id="backBtn" onclick="goBack()" disabled>← Voltar</button>
+  <div id="breadcrumb"><b>Contexto do Sistema</b></div>
+  <div id="lvlpill">N1</div>
+  <div class="hint">🔍 Clique nas caixas para detalhar</div>
+  <div style="font-size:10px;color:var(--muted);margin-left:auto;padding-right:8px;white-space:nowrap">v6.0 · implementado · Telegram + anexos · 151 testes automatizados · migrações 0001–0004</div>
+</header>
+<div class="wrap" id="wrap"></div>
+<script>
+const $=id=>document.getElementById(id);
+const hist=[];
+let cur=null;
+function nd({id,x,y,w=148,icon,name,type,desc,th,drill,hint}){
+  const el=document.createElement('div');
+  el.className='node '+(th||'')+(drill?' click':'');
+  el.id='nd-'+id;
+  el.style.cssText=`left:${x}px;top:${y}px;width:${w}px;`;
+  el.innerHTML=`<div class="ni">${icon}</div><div class="nn">${name}</div><div class="nt">${type}</div><div class="nd">${desc}</div>`+(drill?`<div class="dh">🔍 ${hint||'detalhar'}</div>`:'');
+  if(drill) el.onclick=()=>nav(drill,name);
+  return el;
+}
+function bnd({x,y,w,h,label}){
+  const el=document.createElement('div');el.className='bnd';
+  el.style.cssText=`left:${x}px;top:${y}px;width:${w}px;height:${h}px;`;
+  if(label) el.innerHTML=`<div class="bnd-lbl">${label}</div>`;
+  return el;
+}
+function mksvg(W,H){
+  const s=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('class','arr');s.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  s.innerHTML=`<defs>
+    <marker id="ah"  markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#3a4a6a"/></marker>
+    <marker id="ahz" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#cc5500"/></marker>
+  </defs>`;
+  return s;
+}
+function ar(svg,x1,y1,x2,y2,lbl,bend,zabbix){
+  const mx=(x1+x2)/2,my=(y1+y2)/2;
+  const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+  const col=zabbix?'#cc5500':'#3a4a6a';
+  const mkr=zabbix?'url(#ahz)':'url(#ah)';
+  p.setAttribute('fill','none');p.setAttribute('stroke',col);
+  p.setAttribute('stroke-width',zabbix?'2':'1.5');
+  if(zabbix)p.setAttribute('stroke-dasharray','6,3');
+  p.setAttribute('marker-end',mkr);
+  p.setAttribute('d',bend?`M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`:`M${x1},${y1} L${x2},${y2}`);
+  svg.appendChild(p);
+  if(lbl){
+    const tw=lbl.length*5.2+8;
+    const bg=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    bg.setAttribute('x',mx-tw/2);bg.setAttribute('y',my-8);bg.setAttribute('width',tw);bg.setAttribute('height',13);bg.setAttribute('rx',3);bg.setAttribute('fill','#171a26');
+    svg.appendChild(bg);
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',mx);t.setAttribute('y',my+2.5);t.setAttribute('fill',zabbix?'#cc5500':'#607090');
+    t.setAttribute('font-size','9.5');t.setAttribute('text-anchor','middle');t.setAttribute('font-family',"'Inter',system-ui,sans-serif");
+    t.textContent=lbl;svg.appendChild(t);
+  }
+}
+function leg(items){
+  const el=document.createElement('div');el.className='leg';
+  el.innerHTML=items.map(([bg,bc,bd,bs])=>`<div class="li"><div class="ls" style="background:${bg};border-color:${bc};${bs||''}"></div>${bd}</div>`).join('');
+  return el;
+}
+function cx(x,w=148){return x+w/2}
+function nav(id,label){hist.push({id:cur?.id||'n1',label:cur?.label||'Contexto'});cur={id,label};renderLevel(id,label)}
+function goBack(){if(!hist.length)return;const p=hist.pop();cur=p;renderLevel(p.id,p.label)}
+function renderLevel(id,label){
+  $('wrap').innerHTML='';
+  const lmap={n1:'N1',n2:'N2',n3:'N3'};
+  $('lvlpill').textContent=id.startsWith('n4')?'N4':lmap[id.split('-')[0]]||'N4';
+  const chain=[...hist,{id,label}];
+  $('breadcrumb').innerHTML=chain.map((h,i)=>i<chain.length-1?`<span style="opacity:.45">${h.label}</span> <span style="opacity:.3">›</span> `:`<b>${h.label}</b>`).join('');
+  $('backBtn').disabled=hist.length===0;
+  const fn=LEVELS[id];
+  if(fn){const r=fn();$('wrap').appendChild(r);}
+}
+
+// ── N1 ───────────────────────────────────────────────────────────────────────
+const LEVELS={};
+LEVELS.n1=()=>{
+  const W=1020,H=800;
+  const c=document.createElement('div');c.className='canvas';c.style.cssText=`width:${W}px;height:${H}px`;
+  const svg=mksvg(W,H);
+  // pessoas
+  c.appendChild(nd({id:'usr',x:55, y:30,w:145,icon:'👤',name:'Usuário',      type:'[Pessoa]',         desc:'Registra incidentes e equipamentos pelo Telegram (voz, foto, vídeo, documento) ou web',th:'person'}));
+  c.appendChild(nd({id:'tec',x:220,y:30,w:145,icon:'🔧',name:'Técnico de TI',type:'[Pessoa]',         desc:'Atende incidentes; notificado por e-mail e Telegram; baixa anexos',th:'person'}));
+  c.appendChild(nd({id:'adm',x:385,y:30,w:145,icon:'🛡️',name:'Administrador',type:'[Pessoa]',         desc:'Gerencia usuários, permissões, relatórios e auditoria',th:'person'}));
+  // sistema
+  c.appendChild(nd({id:'sis',x:290,y:230,w:200,icon:'📋',name:'Sistema de Incidentes',type:'[Sistema — escopo]',desc:'Registro conversacional de incidentes e inventário do datacenter universitário',th:'sys',drill:'n2',hint:'ver contêineres'}));
+  // externos (baixo)
+  c.appendChild(nd({id:'wa', x:30, y:480,w:145,icon:'💬',name:'WhatsApp Business',type:'[Sistema Externo]',desc:'Integração pronta (Cloud API); desligada: conta Meta bloqueada (WA_MODE=mock)',th:'off',drill:'n4-wa-off',hint:'por que desligado'}));
+  c.appendChild(nd({id:'gg', x:195,y:480,w:145,icon:'🔑',name:'Google OAuth',      type:'[Sistema Externo]',desc:'Autenticação via conta Google',th:'ext'}));
+  c.appendChild(nd({id:'st', x:360,y:480,w:145,icon:'🎙️',name:'Whisper local',    type:'[faster-whisper]', desc:'Transcrição de áudio e da trilha de vídeos, com vocabulário de TI',th:'ext',drill:'n4-stt',hint:'ver detalhes'}));
+  c.appendChild(nd({id:'sm', x:525,y:480,w:145,icon:'📧',name:'Servidor SMTP',    type:'[Gmail]',          desc:'E-mails de notificação com os anexos do chamado',th:'ext'}));
+  c.appendChild(nd({id:'tg', x:690,y:480,w:160,icon:'✈️',name:'Telegram Bot API', type:'[Sistema Externo]',desc:'Canal principal: o bot do Telegram; long polling, sem URL pública',th:'tg new',drill:'n4-tga',hint:'ver canal'}));
+  // Zabbix — destaque laranja, lado direito
+  c.appendChild(nd({id:'zbx',x:730,y:230,w:200,icon:'📡',name:'Zabbix',           type:'[Monitor Externo]',desc:'Monitora infraestrutura; dispara alertas automáticos como incidentes via webhook',th:'zbx',drill:'n4-zbx',hint:'ver integração'}));
+  // arrows pessoas → sistema
+  ar(svg,cx(55,145),135,cx(290,200),230,'voz/foto/vídeo/texto');
+  ar(svg,cx(220,145),135,cx(290,200)+10,230,'web/Telegram');
+  ar(svg,cx(385,145),135,cx(290,200)+60,230,'painel web');
+  // sistema → externos
+  ar(svg,cx(290,200)-60,335,cx(30,145),480,'msgs');
+  ar(svg,cx(290,200)-20,335,cx(195,145),480,'OAuth2');
+  ar(svg,cx(290,200)+20,335,cx(360,145),480,'áudio');
+  ar(svg,cx(290,200)+60,335,cx(525,145),480,'e-mail + anexos');
+  ar(svg,cx(290,200)+95,335,cx(690,160),480,'mensagens');
+  // Zabbix → sistema (laranja tracejado)
+  ar(svg,730,310,cx(290,200)+100,310,'webhook HTTP',false,true);
+  c.appendChild(svg);
+  c.appendChild(leg([
+    ['var(--person-f)','var(--person-s)','Pessoa'],
+    ['var(--sys-f)','var(--sys-s)','Sistema (escopo) — clicável'],
+    ['var(--ext-f)','var(--ext-s)','Sistema externo','border-style:dashed'],
+    ['var(--tg-f)','var(--tg-s)','Telegram (canal ativo) — clicável'],
+    ['var(--off-f)','var(--off-s)','Desligado (WhatsApp) — clicável','border-style:dotted'],
+    ['var(--zbx-f)','var(--zbx-s)','Zabbix (monitor) — clicável'],
+  ]));
+  return c;
+};
+
+// ── N2 ───────────────────────────────────────────────────────────────────────
+LEVELS.n2=()=>{
+  const W=1060,H=860;
+  const c=document.createElement('div');c.className='canvas';c.style.cssText=`width:${W}px;height:${H}px`;
+  const svg=mksvg(W,H);
+  // pessoas
+  c.appendChild(nd({id:'p1',x:55, y:25,w:138,icon:'👤',name:'Usuário',      type:'[Telegram]',  desc:'Registra por voz, foto, vídeo, documento ou texto',th:'person'}));
+  c.appendChild(nd({id:'p2',x:215,y:25,w:138,icon:'🔧',name:'Técnico',       type:'[Navegador/Telegram]',desc:'Atende incidentes',th:'person'}));
+  c.appendChild(nd({id:'p3',x:375,y:25,w:138,icon:'🛡️',name:'Administrador', type:'[Navegador]', desc:'Gestão e auditoria',th:'person'}));
+  // boundary
+  c.appendChild(bnd({x:25,y:180,w:720,h:480,label:'Sistema de Registro de Incidentes'}));
+  // contêineres internos
+  c.appendChild(nd({id:'bot',x:50, y:220,w:152,icon:'🤖',name:'Bot (Telegram + WhatsApp)', type:'[Python/FastAPI · bot]',desc:'Telegram (polling) e webhook WA; transcreve; interpreta; anexa',th:'wa', drill:'n3-bot',hint:'ver componentes'}));
+  c.appendChild(nd({id:'wbe',x:230,y:220,w:152,icon:'🌐',name:'Interface Web',type:'[React SPA + nginx · web]',    desc:'Painel; nginx: /api, /ws, /webhook',th:'web',drill:'n3-web',hint:'ver componentes'}));
+  c.appendChild(nd({id:'api',x:415,y:220,w:152,icon:'⚙️',name:'API Backend',  type:'[Python/FastAPI · api]',desc:'Negócio, anexos, SLA, auditoria; Alembic no boot',th:'api',drill:'n3-api',hint:'ver componentes'}));
+  c.appendChild(nd({id:'db', x:60, y:480,w:152,icon:'🗄️',name:'PostgreSQL 16',   type:'[Banco de Dados · db]',desc:'Incidentes, anexos, usuários, inventário, auditoria append-only',th:'db'}));
+  c.appendChild(nd({id:'ce', x:290,y:480,w:170,icon:'📨',name:'Celery + Redis',type:'[worker · beat · redis]',desc:'Entrega e-mail/Telegram/WA; SLA a cada 5 min; pub/sub do WebSocket',th:'que'}));
+  c.appendChild(nd({id:'vol',x:535,y:480,w:170,icon:'📁',name:'Volumes',type:'[media · whisper · pgdata]',desc:'Fotos, vídeos e documentos em /data/media; modelo Whisper em cache',th:'db new'}));
+  // externos (direita)
+  c.appendChild(nd({id:'etg',x:830,y:190,w:150,icon:'✈️',name:'Telegram Bot API', type:'[Externo]',desc:'getUpdates (long polling), sendMessage, getFile',th:'tg new',drill:'n4-tga',hint:'ver canal'}));
+  c.appendChild(nd({id:'egg',x:830,y:335,w:150,icon:'🔑',name:'Google OAuth', type:'[Externo]',desc:'Autenticação',th:'ext'}));
+  c.appendChild(nd({id:'est',x:830,y:450,w:150,icon:'🎙️',name:'faster-whisper', type:'[Local, dentro do bot]',desc:'Modelo "small", CPU int8, hotwords de TI',th:'ai',drill:'n4-stt',hint:'ver detalhes'}));
+  c.appendChild(nd({id:'esm',x:830,y:590,w:150,icon:'📧',name:'SMTP (Gmail)',         type:'[Externo]',desc:'E-mails com anexos (até 18 MB)',th:'ext'}));
+  c.appendChild(nd({id:'ewa',x:830,y:710,w:150,icon:'💬',name:'WhatsApp Cloud API', type:'[Externo]',desc:'Conta Meta bloqueada; WA_MODE=mock',th:'off',drill:'n4-wa-off',hint:'por que desligado'}));
+  // Zabbix — topo direito
+  c.appendChild(nd({id:'zbx',x:830,y:20, w:200,icon:'📡',name:'Zabbix',       type:'[Monitor Externo]',desc:'Dispara webhook ao detectar problema na infraestrutura',th:'zbx',drill:'n4-zbx',hint:'ver integração'}));
+  // arrows: pessoas → contêineres
+  ar(svg,cx(55,138),140,cx(50,152),220,'Telegram');
+  ar(svg,cx(215,138),140,cx(230,152),220,'HTTP');
+  ar(svg,cx(375,138),140,cx(415,152),220,'HTTP');
+  // internos
+  ar(svg,382,290,415,290,'');                      // Web → API (REST/WS)
+  { // Bot → API: contorna a Interface Web por baixo
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d','M126,362 C126,420 470,420 470,362');p.setAttribute('fill','none');
+    p.setAttribute('stroke','#3a4a6a');p.setAttribute('stroke-width','1.5');p.setAttribute('marker-end','url(#ah)');
+    svg.appendChild(p);
+    const tx=document.createElementNS('http://www.w3.org/2000/svg','text');
+    tx.setAttribute('x',205);tx.setAttribute('y',422);tx.setAttribute('fill','#607090');tx.setAttribute('font-size','9.5');
+    tx.setAttribute('text-anchor','middle');tx.setAttribute('font-family',"'Inter',system-ui,sans-serif");
+    tx.textContent='REST + token de serviço';svg.appendChild(tx);
+  }
+  ar(svg,cx(415,152)-20,362,cx(60,152)+40,480,'SQL');
+  ar(svg,cx(415,152)+20,362,cx(290,170)+20,480,'enfileira');
+  ar(svg,cx(415,152)+60,362,cx(535,170),480,'grava/serve');
+  ar(svg,290,540,212,540,'SQL');
+  // → externos
+  ar(svg,745,250,830,240,'polling + envio');
+  ar(svg,745,300,830,375,'OAuth2');
+  ar(svg,745,330,830,490,'áudio/vídeo',true);
+  ar(svg,705,560,830,630,'SMTP');
+  ar(svg,745,620,830,750,'desligado',true);
+  // Zabbix → API (laranja)
+  ar(svg,830,110,cx(415,152)+50,220,'webhook POST',false,true);
+  c.appendChild(svg);
+  c.appendChild(leg([
+    ['var(--wa-f)','var(--wa-s)','Bot — clicável'],
+    ['var(--web-f)','var(--web-s)','Interface Web — clicável'],
+    ['var(--api-f)','var(--api-s)','API Backend — clicável'],
+    ['var(--db-f)','var(--db-s)','PostgreSQL / volumes'],
+    ['var(--que-f)','var(--que-s)','Celery + Redis'],
+    ['var(--tg-f)','var(--tg-s)','Telegram — clicável'],
+    ['var(--zbx-f)','var(--zbx-s)','Zabbix — clicável'],
+    ['var(--ext-f)','var(--ext-s)','Sistema externo','border-style:dashed'],
+    ['var(--off-f)','var(--off-s)','Desligado','border-style:dotted'],
+  ]));
+  // 7 contêineres no docker-compose
+  const cmp=document.createElement('div');
+  cmp.style.cssText='position:absolute;left:300px;top:672px;font-size:10px;color:var(--muted)';
+  cmp.textContent='docker compose: db · redis · api · worker · beat · bot · web (8080)';
+  c.appendChild(cmp);
+  return c;
+};
+
+// ── N3 Bot (Telegram + WhatsApp) ─────────────────────────────────────────────
+LEVELS['n3-bot']=()=>{
+  const W=940,H=700;
+  const c=document.createElement('div');c.className='canvas';c.style.cssText=`width:${W}px;height:${H}px`;
+  const svg=mksvg(W,H);
+  c.appendChild(bnd({x:20,y:20,w:900,h:650,label:'Bot — Componentes (contêiner bot · Telegram + WhatsApp)'}));
+
+  // Coluna A — canais de entrada
+  c.appendChild(nd({id:'whr',x:40, y:70, w:160,icon:'📩',name:'Webhook Receiver',  type:'[Componente · WhatsApp]',desc:'POST /webhook/whatsapp; valida HMAC-SHA256; 200 imediato. Canal desligado (mock)',th:'off',drill:'n4-whr',hint:'ver código'}));
+  c.appendChild(nd({id:'tga',x:40, y:280,w:160,icon:'✈️',name:'Telegram Adapter',  type:'[Componente · telegram.py]',desc:'Long polling (getUpdates); vincula conta pelo contato; converte a mensagem para o formato do Processor',th:'tg new',drill:'n4-tga',hint:'ver código'}));
+  // Coluna B — identificação, interpretação, chamada
+  c.appendChild(nd({id:'ach',x:270,y:70, w:160,icon:'🔒',name:'Remetente Checker', type:'[Componente]',desc:'Identifica usuário pelo número (WA) ou chat_id (Telegram); cache só de positivos (60 s)',th:'web',drill:'n4-ach',hint:'ver código'}));
+  c.appendChild(nd({id:'itp',x:270,y:280,w:160,icon:'🧠',name:'Intent Parser v1.1', type:'[Componente]',desc:'Sem acentos, início de palavra, "!" = palavra inteira, negação; cadastro por rótulos',th:'wa',drill:'n4-itp',hint:'ver código'}));
+  c.appendChild(nd({id:'apc',x:270,y:490,w:160,icon:'🔌',name:'API Client',         type:'[Componente]',desc:'REST na API com X-Service-Token, X-User-Id e X-Canal (TELEGRAM / WHATSAPP)',th:'api',drill:'n4-apc',hint:'ver código'}));
+  // Coluna C — mídia, anexos, resposta
+  c.appendChild(nd({id:'mdl',x:500,y:70, w:160,icon:'⬇️',name:'Media Downloader',  type:'[Componente]',desc:'Baixa áudio, foto, vídeo e documento (Graph API ou getFile do Telegram)',th:'wa',drill:'n4-mdl',hint:'ver código'}));
+  c.appendChild(nd({id:'gan',x:500,y:280,w:160,icon:'📎',name:'Gerenciador de Anexos', type:'[Componente · processor.py]',desc:'Janela de 10 min: junta arquivos ao chamado/cadastro recente ou guarda para o próximo relato',th:'api new',drill:'n4-gan',hint:'ver código'}));
+  c.appendChild(nd({id:'snd',x:500,y:490,w:160,icon:'📤',name:'Senders',          type:'[Componente]',desc:'TelegramSender (sendMessage + teclado) e WA Sender (Cloud API, mock)',th:'tg',drill:'n4-was',hint:'ver código'}));
+  // Coluna D — transcrição
+  c.appendChild(nd({id:'stt',x:730,y:70, w:170,icon:'🎙️',name:'STT Adapter',       type:'[Componente]',desc:'faster-whisper local "small" (CPU int8) com hotwords de TI; trilha de áudio de vídeos',th:'ai',drill:'n4-stt',hint:'ver código'}));
+
+  // Setas
+  ar(svg, 200, 110, 270, 110, 'evento');
+  ar(svg, 200, 300, 300, 190, 'update');
+  ar(svg, 430, 110, 500, 110, 'media_id');
+  ar(svg, 660, 110, 730, 110, 'áudio/vídeo');
+  ar(svg, 350, 200, 350, 280, 'remetente ok');
+  ar(svg, 735, 190, 430, 300, 'texto transcrito');
+  ar(svg, 580, 200, 580, 280, 'foto/vídeo/doc');
+  ar(svg, 430, 345, 500, 345, 'contexto');
+  ar(svg, 350, 410, 350, 490, 'operação');
+  ar(svg, 580, 410, 430, 520, 'upload + anexar');
+  ar(svg, 430, 560, 500, 560, 'resultado');
+  ar(svg, 430, 400, 540, 490, 'ajuda/erro');
+
+  c.appendChild(svg);
+  c.appendChild(leg([
+    ['var(--tg-f)','var(--tg-s)','Telegram — clicável'],
+    ['var(--wa-f)','var(--wa-s)','Componente do bot — clicável'],
+    ['var(--web-f)','var(--web-s)','Remetente Checker — clicável'],
+    ['var(--ai-f)','var(--ai-s)','STT Adapter — clicável'],
+    ['var(--api-f)','var(--api-s)','API Client / Anexos — clicável'],
+    ['var(--off-f)','var(--off-s)','WhatsApp (desligado)','border-style:dotted'],
+  ]));
+  return c;
+};
+
+// ── N3 Interface Web ──────────────────────────────────────────────────────────
+LEVELS['n3-web']=()=>{
+  const W=960,H=700;
+  const c=document.createElement('div');c.className='canvas';c.style.cssText=`width:${W}px;height:${H}px`;
+  const svg=mksvg(W,H);
+  c.appendChild(bnd({x:20,y:20,w:920,h:650,label:'Interface Web — Componentes (React SPA)'}));
+
+  // Linha 1 — entrada e roteamento
+  c.appendChild(nd({id:'lgv',x:50,  y:70, w:160,icon:'🔐',name:'Login View',         type:'[Componente]',desc:'Tela de entrada; inicia fluxo OAuth Google; recebe e armazena JWT',th:'web',drill:'n4-lgv',hint:'ver código'}));
+  c.appendChild(nd({id:'rou',x:260, y:70, w:160,icon:'🗺️',name:'Router / Auth Guard', type:'[Componente]',desc:'Gerencia rotas; protege com JWT; redireciona para login se expirado',th:'web',drill:'n4-rou',hint:'ver código'}));
+  c.appendChild(nd({id:'prf',x:470, y:70, w:160,icon:'👤',name:'Perfil View',          type:'[Componente]',desc:'Celular (identifica no WhatsApp e no Telegram); link do bot e desvínculo do Telegram',th:'web',drill:'n4-prf',hint:'ver código'}));
+  c.appendChild(nd({id:'ntf',x:680, y:70, w:160,icon:'🔔',name:'Notificações WS',      type:'[Componente]',desc:'WebSocket com a API; atualiza incidentes em tempo real sem recarregar a página',th:'api',drill:'n4-ntf',hint:'ver código'}));
+
+  // Linha 2 — views principais
+  c.appendChild(nd({id:'inc',x:50,  y:310,w:160,icon:'📋',name:'Incidentes View',     type:'[Componente]',desc:'Lista, filtra e registra; detalhe com anexos (foto, vídeo, documento) e botão Baixar; badges Web/WA/Telegram/Zabbix',th:'web',drill:'n4-inc',hint:'ver código'}));
+  c.appendChild(nd({id:'inv',x:260, y:310,w:160,icon:'🖥️',name:'Inventário View',     type:'[Componente]',desc:'Lista ativos; upload de foto com preview; exibe resultado do OCR',th:'web',drill:'n4-inv',hint:'ver código'}));
+  c.appendChild(nd({id:'adm',x:470, y:310,w:160,icon:'🛡️',name:'Admin Panel',         type:'[Componente]',desc:'Usuários, permissões, SLAs, canais (WhatsApp/Telegram), fila de notificações, auditoria e relatórios',th:'web',drill:'n4-adm',hint:'ver código'}));
+  c.appendChild(nd({id:'apc',x:680, y:310,w:160,icon:'🔌',name:'API Client',           type:'[Componente]',desc:'Wrapper axios; injeta JWT; intercepta 401/403; trata erros globalmente',th:'api',drill:'n4-apc-web',hint:'ver código'}));
+
+  // Setas
+  // Login → Router
+  ar(svg, 210, 107, 260, 107, 'JWT obtido');
+  // Router → views (distribui)
+  ar(svg, cx(260,160), 190, cx(50,160),  310, 'navega');
+  ar(svg, cx(260,160), 190, cx(260,160), 310, 'navega');
+  ar(svg, cx(260,160), 190, cx(470,160), 310, 'navega');
+  ar(svg, cx(260,160), 190, cx(470,160), 190, '');
+  ar(svg, cx(470,160)+80, 150, cx(680,160), 150, 'navega');
+  // Notificações WS → Incidentes View (push de eventos)
+  ar(svg, cx(680,160), 190, cx(50,160)+80, 310, 'push evento', true);
+  // Views → API Client
+  ar(svg, cx(50,160)+80,  425, cx(680,160), 377, 'REST', true);
+  ar(svg, cx(260,160)+80, 425, cx(680,160), 390, 'REST', true);
+  ar(svg, cx(470,160)+80, 425, cx(680,160), 403, 'REST', true);
+  // Router → Perfil View
+  ar(svg, cx(260,160)+80, 107, cx(470,160), 107, 'navega');
+
+  c.appendChild(svg);
+  c.appendChild(leg([
+    ['var(--web-f)','var(--web-s)','Componente Web — clicável'],
+    ['var(--api-f)','var(--api-s)','API Client / WebSocket — clicável'],
+  ]));
+  return c;
+};
+
+// ── N3 API Backend ────────────────────────────────────────────────────────────
+LEVELS['n3-api']=()=>{
+  const W=900,H=920;
+  const c=document.createElement('div');c.className='canvas';c.style.cssText=`width:${W}px;height:${H}px`;
+  const svg=mksvg(W,H);
+  c.appendChild(bnd({x:20,y:20,w:860,h:880,label:'API Backend — Componentes'}));
+  c.appendChild(nd({id:'oau',x:50, y:70, w:152,icon:'🔑',name:'OAuth Handler',      type:'[Componente]',desc:'Fluxo Google OAuth2; criação de JWT com claims de permissão',th:'web',drill:'n4-oau',hint:'ver código'}));
+  c.appendChild(nd({id:'mid',x:50, y:250,w:152,icon:'🛡️',name:'Auth Middleware',    type:'[Componente]',desc:'Valida JWT; injeta usuário; aplica permissões por rota',th:'web',drill:'n4-mid',hint:'ver código'}));
+  c.appendChild(nd({id:'isv',x:255,y:70, w:152,icon:'📋',name:'Incidente Service',  type:'[Componente]',desc:'Criação, transições, anexos do chamado; canal WEB/WHATSAPP/TELEGRAM/ZABBIX',th:'api',drill:'n4-isv',hint:'ver código'}));
+  c.appendChild(nd({id:'sla',x:460,y:70, w:152,icon:'⏱️',name:'SLA Monitor',        type:'[Componente]',desc:'Calcula prazos por criticidade; dispara escalonamento',th:'api',drill:'n4-sla',hint:'ver código'}));
+  // Zabbix Receiver — novo componente
+  c.appendChild(nd({id:'zbr',x:665,y:70, w:175,icon:'📡',name:'Zabbix Receiver',   type:'[Componente]',desc:'Recebe webhook do Zabbix; valida token; cria incidente automaticamente',th:'zbx',drill:'n4-zbr',hint:'ver integração'}));
+  c.appendChild(nd({id:'aud',x:255,y:250,w:152,icon:'📜',name:'Auditoria Service',  type:'[Componente]',desc:'Log imutável: quem/quando/o quê em toda operação de escrita',th:'api',drill:'n4-aud',hint:'ver código'}));
+  c.appendChild(nd({id:'asv',x:460,y:250,w:152,icon:'🖥️',name:'Ativo Service',      type:'[Componente]',desc:'CRUD de equipamentos; fluxo pendente → validado',th:'db', drill:'n4-asv',hint:'ver código'}));
+  c.appendChild(nd({id:'usv',x:665,y:250,w:175,icon:'👤',name:'Usuario Service',    type:'[Componente]',desc:'CRUD de usuários; permissões; bloqueio; vincula WhatsApp e Telegram (by-telegram, vincular-telegram)',th:'person',drill:'n4-usv',hint:'ver código'}));
+  c.appendChild(nd({id:'ocr',x:460,y:440,w:152,icon:'📷',name:'OCR Adapter',        type:'[Componente]',desc:'Extrai dados de fotos de plaquetas patrimoniais',th:'ai'}));
+  c.appendChild(nd({id:'ema',x:50, y:440,w:152,icon:'📧',name:'Email Notifier',     type:'[Componente]',desc:'SMTP (Gmail) via outbox + Celery; anexa os arquivos do chamado (até 18 MB)',th:'que',drill:'n4-ema',hint:'ver código'}));
+  c.appendChild(nd({id:'wno',x:255,y:440,w:152,icon:'💬',name:'WA Notifier',        type:'[Componente]',desc:'Cloud API; em modo mock desde 17/11/2026 (conta Meta bloqueada)',th:'off',drill:'n4-wno',hint:'ver código'}));
+  c.appendChild(nd({id:'tgn',x:665,y:440,w:175,icon:'✈️',name:'Telegram Notifier', type:'[Componente]',desc:'sendMessage para quem tem telegram_chat_id: novo incidente, anexo, resolução, SLA',th:'tg new',drill:'n4-tgn',hint:'ver código'}));
+  c.appendChild(nd({id:'anx',x:330,y:620,w:170,icon:'📎',name:'Anexos (Mídia)', type:'[Componente · midia.py]',desc:'Upload, tipos FOTO/VIDEO/DOCUMENTO, limites, /media/&lt;uuid&gt;, download autenticado',th:'db new',drill:'n4-anx',hint:'ver código'}));
+  // arrows internas
+  // OAuth Handler → Auth Middleware (gera JWT)
+  ar(svg,cx(50,152),190,cx(50,152),250,'gera JWT');
+  // Incidente Service → Auditoria Service
+  ar(svg,cx(255,152),190,cx(255,152),250,'audita');
+  // SLA Monitor → Incidente Service (escalonamento — vai para a esquerda)
+  ar(svg,cx(460,152),107,cx(255,152),107,'escalonamento');
+  // OAuth Handler → Usuario Service (upsert ao logar)
+  ar(svg,202,120,665,280,'upsert usuário',true);
+  // Auth Middleware → Usuario Service (consulta ativo)
+  ar(svg,202,310,cx(460,152),310,'verifica ativo');
+  // Auditoria Service → Email Notifier
+  ar(svg,cx(255,152),370,cx(50,152),440,'dispara');
+  // Auditoria Service → WA Notifier
+  ar(svg,cx(255,152)+30,370,cx(255,152)+30,440,'dispara');
+  // Ativo Service → OCR Adapter
+  ar(svg,cx(460,152),370,cx(460,152),440,'OCR');
+  // Usuario Service → Email Notifier (notifica admin/usuário bloqueado)
+  ar(svg,cx(665,175),370,cx(50,152)+76,440,'notifica',true);
+  // Auditoria Service → Telegram Notifier
+  ar(svg,cx(255,152)+60,370,cx(665,175),440,'dispara',true);
+  // Incidente Service → Anexos
+  ar(svg,407,170,430,620,'anexos');
+  // Email Notifier → Anexos (lê arquivos para anexar)
+  ar(svg,cx(50,152),560,330,690,'lê arquivos',true);
+  // Zabbix Receiver → Incidente Service (laranja — vai para a esquerda, mesma linha)
+  ar(svg,665,120,407,120,'cria incidente',false,true);
+  c.appendChild(svg);
+  c.appendChild(leg([
+    ['var(--web-f)','var(--web-s)','Auth — clicável'],
+    ['var(--api-f)','var(--api-s)','Negócio — clicável'],
+    ['var(--person-f)','var(--person-s)','Usuario Service — clicável'],
+    ['var(--db-f)','var(--db-s)','Dados — clicável'],
+    ['var(--que-f)','var(--que-s)','Notif. — clicável'],
+    ['var(--ai-f)','var(--ai-s)','OCR'],
+    ['var(--tg-f)','var(--tg-s)','Telegram Notifier — clicável'],
+    ['var(--off-f)','var(--off-s)','WA Notifier (mock)','border-style:dotted'],
+    ['var(--zbx-f)','var(--zbx-s)','Zabbix Receiver — clicável'],
+  ]));
+  return c;
+};
+
+// ── N4 helpers ────────────────────────────────────────────────────────────────
+function n4panel(title,sub,html){
+  const d=document.createElement('div');d.className='n4p';
+  d.innerHTML=`<h2>${title}</h2><div class="sub">${sub}</div>${html}`;
+  return d;
+}
+function tbl(heads,rows){
+  return `<table><thead><tr>${heads.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(cc=>`<td>${cc}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+// N4 Usuario Service
+LEVELS['n4-usv']=()=>n4panel('Usuario Service','API Backend · Autenticação e Gerenciamento de Usuários',`
+  <h3>Modelo: Usuario</h3>
+  ${tbl(['Campo','Tipo','Descrição'],[
+    ['<code>id</code>','UUID','Chave primária interna'],
+    ['<code>google_id</code>','str (único)','Identificador do Google; usado no upsert do OAuth'],
+    ['<code>email</code>','str (único)','E-mail Google; imutável após criação'],
+    ['<code>nome</code>','str','Nome do perfil Google'],
+    ['<code>whatsapp</code>','str?','Celular E.164; identifica o usuário no WhatsApp <b>e</b> no Telegram (com ou sem o nono dígito)'],
+    ['<code>telegram_chat_id</code>','str? (único)','<span class="tag" style="background:#071a26;color:#7cc4f0">v6</span> Chat do Telegram; gravado quando a pessoa compartilha o PRÓPRIO contato com o bot (migração 0004)'],
+    ['<code>ativo</code>','bool','false = bloqueado; verificado a cada requisição'],
+    ['<code>is_admin</code>','bool','Acesso ao painel de administração'],
+    ['<code>pode_atender</code>','bool','Pode assumir e resolver incidentes'],
+    ['<code>pode_cadastrar_ativo</code>','bool','Pode validar equipamentos no inventário'],
+    ['<code>criado_em</code>','datetime','Data do primeiro login'],
+    ['<code>atualizado_em</code>','datetime','Última alteração de perfil ou permissão'],
+  ])}
+  <h3>Endpoints</h3>
+  ${tbl(['Rota','Método','Descrição','Permissão'],[
+    ['<code>/usuarios</code>','<span class="tag GET">GET</span>','Lista todos os usuários (filtros: ativo, is_admin, novo)','is_admin'],
+    ['<code>/usuarios/{id}</code>','<span class="tag GET">GET</span>','Detalhe de um usuário','is_admin'],
+    ['<code>/usuarios/{id}/permissoes</code>','<span class="tag PUT">PUT</span>','Atualiza permissões: pode_atender, pode_cadastrar_ativo, is_admin','is_admin'],
+    ['<code>/usuarios/{id}/bloquear</code>','<span class="tag POST">POST</span>','Bloqueia usuário (ativo=false); notifica por e-mail','is_admin'],
+    ['<code>/usuarios/{id}/desbloquear</code>','<span class="tag POST">POST</span>','Desbloqueia usuário (ativo=true)','is_admin'],
+    ['<code>/usuarios/me</code>','<span class="tag GET">GET</span>','Perfil do próprio usuário autenticado','Autenticado'],
+    ['<code>/usuarios/me/whatsapp</code>','<span class="tag PUT">PUT</span>','Vincula número de WhatsApp ao próprio perfil','Autenticado'],
+    ['<code>/usuarios/me/telegram</code>','<span class="tag DEL">DEL</span>','Desvincula o Telegram do próprio perfil (DESVINCULAR_TELEGRAM)','Autenticado'],
+    ['<code>/usuarios/by-whatsapp?numero=</code>','<span class="tag GET">GET</span>','Identifica o remetente do WhatsApp','Token de serviço (bot)'],
+    ['<code>/usuarios/by-telegram?chat_id=</code>','<span class="tag GET">GET</span>','Identifica o remetente do Telegram','Token de serviço (bot)'],
+    ['<code>/usuarios/vincular-telegram</code>','<span class="tag POST">POST</span>','Liga chat_id ao usuário cujo celular bate com o contato compartilhado (404 se não cadastrado, 403 se bloqueado)','Token de serviço (bot)'],
+  ])}
+  <h3>Regras de negócio</h3>
+  ${tbl(['Regra','Descrição'],[
+    ['Upsert no login','OAuth Handler chama <code>upsert_by_google_id()</code>; cria usuário se não existir'],
+    ['Novo usuário','<code>ativo=true</code>, todas as permissões <code>false</code>; notifica administrador(es) por e-mail'],
+    ['Mínimo de admins','Recusa <b>tanto bloquear</b> quanto <b>remover is_admin</b> se restar apenas 1 admin ativo — validado em ambas as operações'],
+    ['Bloqueio imediato','<code>ativo=false</code> verificado no banco a cada requisição; JWT válido não garante acesso'],
+    ['Auditoria','Toda alteração de permissão ou bloqueio é registrada em <code>LogAuditoria</code>'],
+  ])}
+  <div class="note">O campo <code>whatsapp</code> é preenchido pelo próprio usuário via <code>PUT /usuarios/me/whatsapp</code>. Sem esse campo, o usuário não usa os bots e recebe notificações apenas por e-mail.</div>
+  <div class="note tg">✈️ <b>v6:</b> o Telegram não expõe o número do usuário. A vinculação acontece quando a pessoa toca em <b>📱 Compartilhar meu número</b> no bot: só o contato da própria pessoa é aceito (<code>contact.user_id == from.id</code>) e a API compara o número com o celular do perfil.</div>
+  <h3>Comportamentos confirmados em testes (Rodada 12)</h3>
+  ${tbl(['Comportamento','Resultado'],[
+    ['GET /usuarios','Retorna lista com todos os campos: id, email, ativo, is_admin, pode_atender, pode_cadastrar_ativo, whatsapp, criado_em'],
+    ['Novo usuário','ativo=true, is_admin=false, pode_atender=false, pode_cadastrar_ativo=false (todos os flags false exceto ativo)'],
+    ['Concessão de permissão','Efeito imediato na próxima request — sem necessidade de novo JWT'],
+    ['Bloquear único admin','400 — validado pelo endpoint (não apenas pelo frontend)'],
+    ['Bloqueio durante sessão ativa','JWT existente fica inválido: refresh retorna 401'],
+    ['Re-login (mesmo google_id)','Upsert, não insert: permissões concedidas são preservadas após re-autenticação'],
+  ])}`);
+
+
+
+// N4 Zabbix — integração geral
+LEVELS['n4-zbx']=()=>n4panel('Zabbix — Integração com o Sistema','N1 · Sistema Externo → Sistema de Incidentes',`
+  <h3>Visão geral</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">O Zabbix monitora a infraestrutura do datacenter (servidores, switches, links, UPS, temperatura etc.). Quando um problema é detectado, o Zabbix chama um webhook HTTP no endpoint do sistema, que cria um incidente automaticamente — sem intervenção humana. Quando o problema é resolvido, o Zabbix chama o mesmo webhook com evento de recuperação, e o sistema atualiza o incidente.</p>
+  <h3>Fluxo de criação automática</h3>
+  ${tbl(['Passo','Quem','Ação'],[
+    ['1','Zabbix','Detecta problema (trigger dispara)'],
+    ['2','Zabbix','Chama <code>POST /webhook/zabbix</code> com payload do alerta'],
+    ['3','Zabbix Receiver','Valida token; extrai dados; determina criticidade'],
+    ['4','Incidente Service','Cria incidente com canal=ZABBIX; calcula SLA'],
+    ['5','Notificadores','Notifica grupo de atendimento por e-mail e WhatsApp'],
+    ['6','Zabbix (recuperação)','Chama webhook com <code>event_value=0</code>'],
+    ['7','Incidente Service','Fecha incidente automaticamente (ou sinaliza para revisão)'],
+  ])}
+  <h3>Mapeamento de severidade Zabbix → criticidade do sistema</h3>
+  ${tbl(['Severity Zabbix','Criticidade no sistema','SLA sugerido'],[
+    ['Disaster / High','ALTA','2 horas'],
+    ['Average','MEDIA','1 dia útil'],
+    ['Warning / Information','BAIXA','3 dias úteis'],
+    ['Not classified','BAIXA','3 dias úteis'],
+  ])}
+  <h3>v6 — ambiente de teste local (implementado)</h3>
+  ${tbl(['Item','Valor'],[
+    ['Stack','<code>zabbix/docker-compose.yml</code>: Zabbix 7.0 (server, web em <code>localhost:8081</code>, PostgreSQL) na mesma rede do sistema'],
+    ['Configuração','<code>scripts/zabbix_setup.py</code> (idempotente): media type webhook → <code>http://web/webhook/zabbix</code> com Bearer <code>ZABBIX_WEBHOOK_TOKEN</code>'],
+    ['Ação','"Enviar ao Sistema de Incidentes": problema e recuperação, grupos <i>Incidentes - teste</i> e <i>Dispositivos</i>, severidade High ou maior'],
+    ['Hosts','<code>srv-teste</code> (item trapper <code>teste.falha</code>) e dispositivos reais por ICMP no grupo Dispositivos'],
+    ['Teste','<code>--problema</code> abre incidente ALTA; <code>--recuperar</code> fecha automaticamente'],
+  ])}
+  <div class="note zbx">O token de autenticação do webhook Zabbix é diferente do HMAC do WhatsApp. Configurar <code>ZABBIX_WEBHOOK_TOKEN</code> como variável de ambiente segura e rotacionar periodicamente.</div>
+  <div class="note">📐 <b>Nota de layout no N1:</b> o Zabbix é desenhado à direita do Sistema de Incidentes na mesma faixa vertical (y≈310), não abaixo junto aos outros externos (WhatsApp API, Google OAuth, STT, SMTP que ficam em y≈480). Isso é intencional — a seta <code>webhook HTTP</code> flui horizontalmente (Zabbix→Sistema, da direita para o centro), refletindo que o Zabbix envia dados ativamente para o sistema. Algoritmos de detecção puramente por eixo Y podem classificar erroneamente Zabbix e Sistema como no mesmo nível — a verificação correta é pelo eixo X (Zabbix x≥730, Sistema x=290..490).</div>`);
+
+// N4 Zabbix Receiver (componente da API)
+LEVELS['n4-zbr']=()=>n4panel('Zabbix Receiver','API Backend · Componente',`
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Ponto de entrada dos alertas automáticos do Zabbix. Valida token estático no header <code>Authorization: Bearer &lt;token&gt;</code>. Converte o payload do Zabbix para o modelo de incidente do sistema. Idempotente: usa <code>event_id</code> do Zabbix para evitar incidentes duplicados em reenvios.</p>
+  <h3>Endpoint e respostas</h3>
+  ${tbl(['Rota','Método','Auth','Erros possíveis'],[
+    ['<code>/webhook/zabbix</code>','<span class="tag POST">POST</span>','Bearer token estático','403 token inválido · 422 payload incompleto'],
+  ])}
+  <h3>Validação de payload</h3>
+  ${tbl(['Campo obrigatório','Ausente → retorna'],[
+    ['<code>event_id</code>','422 Unprocessable Entity'],
+    ['<code>severity</code> (quando event_value=1)','422 Unprocessable Entity'],
+    ['<code>event_value</code>','422 Unprocessable Entity'],
+  ])}
+  <div class="note zbx">Severidade não mapeada (ex: "Not classified") usa <strong>fallback para BAIXA</strong> em vez de rejeitar — confirmado em testes. Isso evita que alertas desconhecidos sejam silenciados.</div>
+  <h3>Payload recebido do Zabbix (exemplo)</h3>
+  <pre>{
+  "event_id":    "12345",
+  "event_value": "1",          // 1=problema, 0=recuperação
+  "trigger_name":"CPU acima de 90% — servidor-db01",
+  "severity":    "High",
+  "host":        "servidor-db01",
+  "host_ip":     "192.168.1.10",
+  "trigger_url": "https://zabbix.cesup.ufrgs.br/...",
+  "timestamp":   "1731000000"
+}</pre>
+  <h3>Lógica de idempotência</h3>
+  ${tbl(['Campo','Uso'],[
+    ['<code>event_id</code>','Chave única por evento; armazenado no incidente como <code>ref_externa</code>'],
+    ['<code>event_value=1</code>','Cria incidente (se <code>ref_externa</code> ainda não existir)'],
+    ['<code>event_value=0</code>','Fecha incidente correspondente automaticamente'],
+  ])}
+  <h3>Logs de auditoria gerados (fluxo completo Zabbix)</h3>
+  ${tbl(['Ordem','Ação','usuario_id','canal'],[
+    ['1','CRIAR_INCIDENTE','null (sistema)','ZABBIX'],
+    ['2','ESCALONAR_INCIDENTE (se SLA vencer)','null (sistema)','SISTEMA'],
+    ['3','ATENDER_INCIDENTE (técnico assume)','usr-xxx','WEB'],
+    ['4','FECHAR_AUTOMATICO (event_value=0) ou RESOLVER_INCIDENTE','null ou usr-xxx','ZABBIX ou WEB'],
+  ])}
+  <div class="note zbx">Incidentes criados pelo Zabbix têm <code>aberto_por_id=null</code> e <code>usuario_id=null</code> no log de auditoria — confirmado em testes. Técnico ainda precisa registrar resolução manual se o problema não se recuperar automaticamente via <code>event_value=0</code>.</div>`);
+
+// ── N4 Bot WhatsApp ───────────────────────────────────────────────────────────
+LEVELS['n4-whr']=()=>n4panel('Webhook Receiver','Bot · Componente do canal WhatsApp (desligado)',`
+  <div class="note off">⏸️ <b>Desligado desde 17/11/2026:</b> a Meta bloqueou a conta de desenvolvedor. O código continua no bot e testado; <code>WA_MODE=mock</code> e <code>canal_whatsapp_ativo=false</code>. Ver <i>WhatsApp — por que está desligado</i>.</div>
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Ponto de entrada de eventos do WhatsApp (exposto pelo nginx em <code>/webhook/whatsapp</code>; nos testes, via Cloudflare quick tunnel). Valida a assinatura HMAC-SHA256 no header <code>X-Hub-Signature-256</code> e rejeita com 403 se inválida. Processa o evento em segundo plano (tarefa Celery <code>bot.processar</code> ou <code>BackgroundTasks</code>) e retorna 200 <strong>imediatamente</strong>. O evento traz só o <code>media_id</code>, não o arquivo.</p>
+  <h3>Endpoints</h3>
+  ${tbl(['Rota','Método','Descrição','Auth'],[
+    ['<code>/webhook/whatsapp</code>','<span class="tag GET">GET</span>','Verificação de token (setup inicial do webhook)','Token fixo'],
+    ['<code>/webhook/whatsapp</code>','<span class="tag POST">POST</span>','Recebe eventos de mensagem','HMAC-SHA256'],
+  ])}
+  <h3>Tipos de evento e roteamento</h3>
+  ${tbl(['Tipo de mensagem','Campo <code>type</code>','Próximo passo'],[
+    ['Texto digitado','<code>text</code>','→ Remetente Checker → Intent Parser'],
+    ['Áudio (voz)','<code>audio</code>','→ Remetente Checker → Media Downloader → STT → Intent Parser'],
+    ['Foto','<code>image</code>','→ Remetente Checker → Media Downloader → Gerenciador de Anexos (e OCR se for cadastro)'],
+    ['Vídeo','<code>video</code>','→ Media Downloader → STT (trilha de áudio) → Intent Parser; arquivo vira anexo'],
+    ['Documento (PDF, DOCX, XLSX, ODT, TXT, CSV…)','<code>document</code>','→ Media Downloader → Gerenciador de Anexos'],
+    ['Resposta a botão/lista','<code>interactive</code>','→ Remetente Checker → Intent Parser'],
+    ['Outros (sticker, localização…)','qualquer outro','→ Sender: "formato não suportado"'],
+  ])}
+  <div class="note">Eventos de status de entrega (<code>statuses</code>) são ignorados silenciosamente — apenas mensagens são processadas.</div>`);
+
+LEVELS['n4-ach']=()=>n4panel('Remetente Checker','Bot WhatsApp · Componente',`
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Identifica o usuário do sistema pelo número de WhatsApp do remetente. Consulta o <strong>Usuario Service</strong> na API Backend. Bloqueia o fluxo se o número não estiver cadastrado ou se o usuário estiver inativo.</p>
+  <h3>Fluxo de verificação</h3>
+  ${tbl(['Situação','HTTP','Ação'],[
+    ['Número encontrado e usuário ativo','200','Injeta <code>usuario_id</code> no contexto; passa adiante'],
+    ['Número não cadastrado','<b>404</b>','WA Sender: "Seu número não está cadastrado. Fale com a TI."'],
+    ['Usuário bloqueado','<b>403</b>','WA Sender: "Seu acesso está suspenso. Entre em contato com o administrador."'],
+  ])}
+  <h3>Consulta à API</h3>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:8px"><code>GET /usuarios/by-whatsapp?numero={remetente}</code> — rota interna, autenticada por token de serviço (não JWT de usuário). Resultado é cacheado por 60 s por número para reduzir chamadas.</p>
+  <div class="note">O número de WhatsApp vinculado ao perfil é cadastrado pelo próprio usuário via <code>PUT /usuarios/me/whatsapp</code> na interface web.</div>
+  <h3>v6 — Telegram (TelegramChecker)</h3>
+  ${tbl(['Situação','Ação'],[
+    ['chat_id vinculado e usuário ativo','Segue para o Processor (chave <code>tg:&lt;chat_id&gt;</code>)'],
+    ['chat_id desconhecido (404)','Boas-vindas + teclado <b>📱 Compartilhar meu número</b>'],
+    ['Contato de outra pessoa','"Envie o SEU contato" — recusado'],
+    ['Número não cadastrado em nenhum perfil','"Cadastre seu celular em Perfil" + pede o contato de novo'],
+    ['Usuário bloqueado (403)','Mensagem de acesso suspenso'],
+  ])}
+  <div class="note">Correção v6: o cache guarda <b>só resultados positivos</b> (60 s). Antes, um 404 ficava em cache e quem acabara de cadastrar o celular continuava "não cadastrado".</div>`);
+
+LEVELS['n4-mdl']=()=>n4panel('Media Downloader','Bot WhatsApp · Componente',`
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">O WhatsApp não envia o arquivo de mídia no webhook — apenas um <code>media_id</code>. Este componente faz duas chamadas à API do WhatsApp: primeiro obtém a URL temporária do arquivo, depois baixa os bytes. A URL expira em ~5 minutos, por isso o download deve ser imediato.</p>
+  <h3>Fluxo</h3>
+  ${tbl(['Passo','Chamada','Resultado'],[
+    ['1','<code>GET /media/{media_id}</code> (API WhatsApp)','Retorna <code>url</code> temporária e <code>mime_type</code>'],
+    ['2','<code>GET {url}</code> com header <code>Authorization: Bearer {token}</code>','Retorna bytes do arquivo'],
+    ['3','Roteia pelo <code>mime_type</code>','<code>audio/*</code> → STT Adapter; <code>image/*</code> → Intent Parser com bytes'],
+  ])}
+  <h3>Tipos de mídia suportados</h3>
+  ${tbl(['MIME type','Destino'],[
+    ['<code>audio/ogg</code>, <code>audio/mpeg</code>, <code>audio/mp4</code>','STT Adapter'],
+    ['<code>image/jpeg</code>, <code>image/png</code>, <code>image/webp</code>','Gerenciador de Anexos (FOTO); OCR no cadastro de equipamento'],
+    ['<code>video/mp4</code>, <code>video/3gpp</code>, <code>video/quicktime</code>','STT (trilha de áudio) + Gerenciador de Anexos (VIDEO)'],
+    ['PDF, DOC/DOCX, XLS/XLSX, ODT/ODS, TXT, CSV','Gerenciador de Anexos (DOCUMENTO), com o nome original'],
+  ])}
+  <div class="note tg">✈️ <b>Telegram:</b> <code>TelegramMedia</code> usa <code>getFile</code> + download em <code>/file/bot&lt;token&gt;/…</code> (até 20 MB pela Bot API). O token fica na URL: URLs nunca vão para o log.</div>
+  <div class="note">Falha no download (URL expirada, timeout) → WA Sender: "Não consegui processar sua mídia. Tente enviar novamente."</div>`);
+
+LEVELS['n4-stt']=()=>n4panel('STT Adapter','Bot WhatsApp · Componente',`
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Abstrai o motor de transcrição de voz. Recebe bytes de áudio e retorna texto em português. A escolha do backend é feita via variável de ambiente, sem mudança de código.</p>
+  <h3>Backends disponíveis</h3>
+  ${tbl(['Backend','Variável','Latência','Privacidade','Recomendação'],[
+    ['Whisper local (CPU)','<code>STT_BACKEND=local</code>','5–15 s','Total — sem envio externo','Produção (privacidade)'],
+    ['Whisper local (GPU)','<code>STT_BACKEND=local_gpu</code>','1–3 s','Total','Produção (performance)'],
+    ['OpenAI Whisper API','<code>STT_BACKEND=openai</code>','1–2 s','Áudio vai à OpenAI','Testes iniciais'],
+  ])}
+  <h3>Implementação em uso (v6)</h3>
+  ${tbl(['Item','Valor'],[
+    ['Backend','<code>STT_BACKEND=local</code> — faster-whisper, modelo <code>small</code>, CPU <code>int8</code>, idioma pt'],
+    ['Cache do modelo','Volume <code>whisper</code> (baixado uma vez); pré-aquecido em segundo plano na subida do bot'],
+    ['Vocabulário de TI','<code>STT_VOCABULARIO</code> passado como <code>hotwords</code> ("switch", "nobreak", "rack", "patrimônio"…) — "switch" deixou de sair "SWIT"'],
+    ['Vídeo','A trilha de áudio do vídeo é transcrita com o mesmo modelo (PyAV); o vídeo vira anexo'],
+    ['Dependência','PyAV fixado em <code>av&gt;=11,&lt;16</code> (a 16+ removeu <code>metadata_errors</code> usado pelo faster-whisper)'],
+    ['Limpeza','Arquivos temporários removidos após cada transcrição; erros agora vão para o log'],
+    ['Compartilhado','Um único modelo atende WhatsApp e Telegram'],
+  ])}
+  <h3>Interface do componente</h3>
+  <pre>transcribe(audio_bytes: bytes, lang: str = "pt") -> str
+# Lança STTError em caso de falha (timeout, modelo indisponível)</pre>
+  <div class="note">Em falha do STT → WA Sender: "Não consegui transcrever seu áudio. Tente digitar a mensagem." O usuário nunca fica sem resposta.</div>`);
+
+LEVELS['n4-itp']=()=>n4panel('Intent Parser v1.1','Bot · Componente (Telegram e WhatsApp)',`
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Recebe o texto (transcrito ou digitado) mais o contexto do remetente e classifica a intenção. Extrai os dados necessários e chama o API Client com a operação correspondente.</p>
+  <h3>Intenções reconhecidas</h3>
+  ${tbl(['Intenção','Palavras-chave (matching exato de substring, case-insensitive)','Dados extraídos','Operação na API'],[
+    ['REGISTRAR_INCIDENTE','"caiu", "problema", "não funciona", "sem energia", "queimou", "sem resposta"','descrição, criticidade inferida','<code>POST /incidentes</code>'],
+    ['CONSULTAR_INCIDENTE','"status", "meu chamado", "protocolo", "abertos"','número do protocolo (se mencionado)','<code>GET /incidentes?aberto_por=me</code>'],
+    ['RESOLVER_INCIDENTE','"resolvido", "funcionando", "ok já", "corrigi"','id do incidente aberto','<code>POST /incidentes/{id}/resolver</code>'],
+    ['CADASTRAR_ATIVO','"patrimônio", "patrimonio", "equipamento", "computador"','número de patrimônio (se detectado)','<code>POST /ativos</code>'],
+    ['AJUDA','"ajuda", "o que posso", "?", "como"','—','WA Sender: menu de opções'],
+    ['DESCONHECIDO','qualquer outro texto sem keyword acima','—','WA Sender: pedir esclarecimento'],
+  ])}
+  <div class="note tg">✅ <b>v1.1 (implementado):</b> texto e palavras sem acentos e em minúsculas; a palavra precisa <b>começar</b> numa palavra do texto mas pode continuar (<code>queimad</code> casa "queimada"/"queimado"; <code>erro</code> casa "erros" mas não "ferro"); terminada em <code>!</code> exige a palavra inteira (<code>agua!</code> não casa "aguardando"); palavras de RESOLVER negadas até 2 palavras antes ("não está funcionando") não contam. ~70 palavras de REGISTRAR (rede, energia, erros, lentidão, água, fumaça, temperatura…). A limitação abaixo era do v1.</div>
+  <div class="note zbx">⚠️ <b>(v1, corrigido no v1.1) Limitação crítica — matching exato de substring:</b> o parser v1 verifica se a keyword está <em>contida</em> no texto, não se a palavra está presente na forma flexionada. Exemplo confirmado em testes: <code>"queimada"</code> <strong>não</strong> dispara a keyword <code>"queimou"</code> porque são strings diferentes. Usuários devem ser orientados a usar as palavras exatas, ou o v2 (LLM) deve ser adotado para cobertura de variações morfológicas.</div>
+  <h3>Estratégia de classificação</h3>
+  ${tbl(['Versão','Abordagem'],[
+    ['v1 (inicial)','Regras com palavras-chave e regex — simples, sem dependência de modelo externo'],
+    ['v1.1 (em uso)','Regras normalizadas (sem acento, início de palavra, "!", negação) + cadastro por rótulos'],
+    ['v2 (futuro)','Modelo de linguagem pequeno local ou API de LLM para maior precisão em textos ambíguos'],
+  ])}
+  <h3>Ordem de verificação (crítica)</h3>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:6px">As intenções são verificadas na seguinte ordem para evitar conflitos de palavras-chave:<br>
+  <strong>1º RESOLVER_INCIDENTE</strong> → (pendência: CONSULTAR) → (cadastro com rótulos: CADASTRAR_ATIVO) → 2º REGISTRAR_INCIDENTE → 3º CADASTRAR_ATIVO → 4º CONSULTAR_INCIDENTE → 5º AJUDA → 6º DESCONHECIDO<br>
+  <em>Motivo: "problema resolvido" contém tanto "problema" (REGISTRAR) quanto "resolvido" (RESOLVER). Verificando RESOLVER primeiro, a intenção correta é capturada. Confirmado em testes.</em></p>
+  <h3>Comportamentos confirmados em testes</h3>
+  ${tbl(['Entrada','Resultado','Observação'],[
+    ['Mensagem vazia ("")','DESCONHECIDO','Sem keywords → pede esclarecimento'],
+    ['Mensagem longa (> 500 chars)','Classificada normalmente','Sem truncamento'],
+    ['"SERVIDOR CAIU" (maiúsculas)','REGISTRAR_INCIDENTE','Case-insensitive funciona'],
+    ['"problema resolvido"','RESOLVER_INCIDENTE','Ordem correta: RESOLVER verificado antes de REGISTRAR'],
+    ['"lâmpada queimada"','DESCONHECIDO ⚠️','<b>Bug confirmado em testes:</b> "queimada" ≠ "queimou" — keyword não detectada. Usar "lâmpada sem energia" ou adicionar "queimada" como keyword no v1'],
+    ['"lâmpada sem energia"','REGISTRAR_INCIDENTE','Keyword "sem energia" detectada corretamente'],
+    ['"!!! ###" (símbolos)','DESCONHECIDO','Sem keywords — atenção: "?" é keyword de AJUDA'],
+  ])}
+  <h3>v1.1 — comportamentos novos (testes do bot)</h3>
+  ${tbl(['Entrada','Resultado','Observação'],[
+    ['"lâmpada queimada"','REGISTRAR_INCIDENTE ✅','Bug do v1 corrigido: <code>queimad</code> por início de palavra'],
+    ['"o servidor não está funcionando"','REGISTRAR_INCIDENTE','Negação anula "funcionando" (RESOLVER)'],
+    ['"ainda não foi resolvido"','CONSULTAR_INCIDENTE','Cobrança (PENDENCIA), não resolução'],
+    ['"aguardando retorno"','não casa "agua!"','Palavra inteira com "!"'],
+    ['"água pingando no rack"','REGISTRAR · ALTA','Ambiente físico → criticidade ALTA'],
+    ['"sistema lento"','REGISTRAR · BAIXA','Lentidão → BAIXA'],
+    ['"patrimônio 123456, tipo switch, modelo HPE 2930F, série CN12AB34, local rack 2"','CADASTRAR_ATIVO','Cadastro por rótulos: patrimônio rotulado + mais um campo'],
+    ['"o computador de patrimônio 123456 travou"','REGISTRAR_INCIDENTE','Sem segundo rótulo → é problema, não cadastro'],
+  ])}
+  <h3>Rótulos do cadastro de equipamento</h3>
+  ${tbl(['Campo','Rótulos aceitos'],[
+    ['patrimonio','patrimônio, nº/número de patrimônio, plaqueta'],
+    ['tipo','tipo, tipo de equipamento'],
+    ['modelo','modelo; marca/fabricante é prefixado ao modelo'],
+    ['num_serie','série, nº de série, serial, s/n, sn'],
+    ['localizacao','local, localização; sala/rack/bloco/prédio/laboratório entram no valor ("Rack 2")'],
+  ])}
+  <div class="note">Se o usuário tem mais de um incidente ABERTO e diz "resolvido", o bot pergunta qual deles antes de agir.</div>`);
+
+LEVELS['n4-apc']=()=>n4panel('API Client','Bot · Componente',`
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Realiza as chamadas HTTP à API Backend em nome do bot. Usa um <strong>token de serviço</strong> fixo (não JWT de usuário) para autenticar. Passa o <code>usuario_id</code> identificado pelo Remetente Checker como header para que a API registre corretamente o autor da ação.</p>
+  <h3>Chamadas realizadas</h3>
+  ${tbl(['Operação','Método','Rota','Header especial'],[
+    ['Criar incidente (intenção REGISTRAR)','<span class="tag POST">POST</span>','<code>POST /incidentes</code>','<code>X-User-Id: {usuario_id}</code>'],
+    ['Consultar incidentes (intenção CONSULTAR)','<span class="tag GET">GET</span>','<code>/incidentes?aberto_por={usuario_id}</code>','—'],
+    ['Resolver incidente (intenção RESOLVER)','<span class="tag POST">POST</span>','<code>/incidentes/{id}/resolver</code>','<code>X-User-Id: {usuario_id}</code>'],
+    ['Assumir atendimento','<span class="tag POST">POST</span>','<code>/incidentes/{id}/atender</code>','<code>X-User-Id: {usuario_id}</code>'],
+    ['Cadastrar ativo (intenção CADASTRAR_ATIVO)','<span class="tag POST">POST</span>','<code>/ativos</code>','<code>X-User-Id: {usuario_id}</code>'],
+    ['Verificar usuário por número WA','<span class="tag GET">GET</span>','<code>/usuarios/by-whatsapp?numero={n}</code>','Token de serviço'],
+    ['Verificar usuário pelo chat do Telegram','<span class="tag GET">GET</span>','<code>/usuarios/by-telegram?chat_id={c}</code>','Token de serviço'],
+    ['Vincular Telegram (contato compartilhado)','<span class="tag POST">POST</span>','<code>/usuarios/vincular-telegram</code>','Token de serviço'],
+    ['Enviar arquivo (foto, vídeo, documento)','<span class="tag POST">POST</span>','<code>/uploads</code> (multipart)','<code>X-User-Id</code>'],
+    ['Anexar arquivos a um chamado','<span class="tag POST">POST</span>','<code>/incidentes/{id}/anexos</code>','<code>X-User-Id</code>'],
+    ['OCR da plaqueta','<span class="tag POST">POST</span>','<code>/ativos/ocr-preview</code>','<code>X-User-Id</code>'],
+    ['Foto do equipamento','<span class="tag POST">POST</span>','<code>/ativos/{id}/foto</code>','<code>X-User-Id</code>'],
+  ])}
+  <div class="note tg">✈️ <b>v6 — header <code>X-Canal</code>:</b> o bot informa <code>TELEGRAM</code> ou <code>WHATSAPP</code>; a API grava esse canal no incidente e no log de auditoria. Cada canal tem sua própria instância do API Client.</div>
+  <div class="note">O token de serviço do bot (<code>BOT_SERVICE_TOKEN</code>) é validado pela API Backend como um tipo especial de autenticação — distinto do JWT dos usuários humanos e do HMAC do WhatsApp.</div>`);
+
+LEVELS['n4-was']=()=>n4panel('Senders — TelegramSender e WA Sender','Bot · Componente',`
+  <div class="note tg">✈️ <b>v6:</b> <code>TelegramSender</code> tem a mesma interface do WA Sender (<code>enviar(chave, texto, botoes)</code>): os botões viram teclado de resposta (até 3), o pedido de contato vira o botão <b>📱 Compartilhar meu número</b>. Sem janela de 24 h nem templates. O WA Sender está em modo mock (conta Meta bloqueada).</div>
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Envia mensagens de retorno ao usuário via WhatsApp Business API. Gerencia a janela de 24 horas do WhatsApp: dentro da janela, qualquer texto é permitido; fora dela, apenas templates aprovados pelo Meta.</p>
+  <h3>Tipos de mensagem enviadas pelo bot</h3>
+  ${tbl(['Situação','Mensagem de confirmação / erro','Template?'],[
+    ['Incidente registrado','✅ Confirmação: "Protocolo #ID registrado. SLA: Xh."','Não'],
+    ['Incidente consultado','Lista dos incidentes abertos com estado e protocolo','Não'],
+    ['Incidente resolvido','✅ Incidente #<b>ID</b> marcado como resolvido.','Não'],
+    ['Ativo cadastrado','✅ Equipamento enviado para validação. Patrimônio: <b>X</b>.','Não'],
+    ['Número não cadastrado','❌ Seu número não está cadastrado. Fale com a TI.','Não'],
+    ['Usuário bloqueado','❌ Seu acesso está suspenso.','Não'],
+    ['Arquivo anexado ao chamado','📎 Anexei N arquivo(s) ao chamado INC-XXXX.','Não'],
+    ['Arquivo sem chamado recente','📎 Guardei o arquivo; ele vai junto com o próximo relato (10 min).','Não'],
+    ['Formato não suportado (sticker…)','⚠️ Formato não suportado. Envie texto, áudio, foto, vídeo ou documento.','Não'],
+    ['Falha no STT','⚠️ Não consegui transcrever. Tente digitar.','Não'],
+    ['Falha no download','⚠️ Não consegui processar a mídia. Tente novamente.','Não'],
+    ['Menu de ajuda','Lista de comandos disponíveis com botões de resposta rápida','Não'],
+  ])}
+  <div class="note">Este componente <strong>não</strong> envia alertas de SLA ou notificações de Zabbix — isso é responsabilidade do <em>WA Notifier</em> na API Backend, que atua de forma proativa. O WA Sender só responde a mensagens recebidas do usuário.</div>`);
+
+LEVELS['n4-oau']=()=>n4panel('OAuth Handler','API Backend · Autenticação',`
+  <h3>Fluxo</h3>${tbl(['Passo','Descrição'],[['1','GET /auth/google → redireciona ao Google'],['2','Usuário autentica'],['3','Callback com code → troca por tokens'],['4','Upsert em Usuario por google_id'],['5','Notifica admin se novo usuário'],['6','Retorna JWT HS256 (8 h)']])}
+  <h3>Claims JWT</h3>${tbl(['Claim','Valor'],[['<code>sub</code>','ID interno'],['<code>email</code>','E-mail Google'],['<code>pode_atender</code>','boolean'],['<code>pode_cadastrar_ativo</code>','boolean'],['<code>is_admin</code>','boolean']])}
+  <div class="note">📋 <b>Confirmado em testes (Rodada 12):</b> re-login com o mesmo <code>google_id</code> executa <strong>upsert</strong>, não insert — permissões concedidas pelo admin são preservadas. Um novo JWT é emitido com os claims atualizados, mas o usuário não perde acesso.</div>`);
+
+LEVELS['n4-mid']=()=>n4panel('Auth Middleware','API Backend · Autenticação',`
+  <h3>Respostas de erro</h3>
+  ${tbl(['Situação','HTTP','Descrição'],[
+    ['JWT ausente ou malformado','<b>401</b>','Não autenticado — redireciona para /login na SPA'],
+    ['JWT válido mas usuário bloqueado','<b>401</b>','Bloqueio verificado no banco a cada requisição'],
+    ['Rota exige permissão não concedida','<b>403</b>','Proibido — toast na interface web'],
+    ['Token de serviço do bot inválido','<b>403</b>','Webhook rejeitado'],
+  ])}
+  <h3>Autenticação de serviço (bot)</h3>
+  ${tbl(['Header','Uso'],[
+    ['<code>X-Service-Token</code>','Igual a <code>BOT_SERVICE_TOKEN</code> (comparação em tempo constante)'],
+    ['<code>X-User-Id</code>','Usuário em nome de quem o bot age; precisa estar ativo'],
+    ['<code>X-Canal</code>','<code>WHATSAPP</code> ou <code>TELEGRAM</code> — gravado no incidente e na auditoria'],
+  ])}
+  <div class="note">🔒 <b>v6 — logs sem segredos:</b> filtros em <code>uvicorn.access</code> e <code>uvicorn.error</code> mascaram <code>token=</code>, <code>hub.verify_token</code> e JWTs nas URLs registradas.</div>
+  <h3>Verificações por rota</h3>${tbl(['Rota','Verificação'],[['Qualquer protegida','JWT válido (401); usuário ativo no banco (401)'],['<code>/incidentes/{id}/atender</code>','pode_atender (403)'],['<code>/incidentes/{id}/resolver</code>','pode_atender (403)'],['<code>/ativos/{id}/validar</code>','pode_cadastrar_ativo (403)'],['<code>/usuarios/**</code>','is_admin (403)'],['<code>/auditoria</code>','is_admin (403)'],['<code>/webhook/zabbix</code>','Bearer token estático (403)']])}
+  <div class="note">Bloqueio tem efeito imediato: status <code>ativo</code> verificado no banco a cada requisição.</div>
+  <div class="note">📋 <b>Confirmado em testes (Rodada 12):</b> chamada sem JWT → erro de autenticação (401 ou equivalente). O API Client web injeta <code>Authorization: Bearer {jwt}</code> em toda request via interceptor — sem JWT na memória, o interceptor falha antes de chegar à API. Sem JWT: a request nunca chega ao middleware.</div>`);
+
+LEVELS['n4-isv']=()=>n4panel('Incidente Service','API Backend · Incidentes',`
+  <h3>Modelo: Incidente</h3>
+  ${tbl(['Campo','Tipo','Notas'],[
+    ['<code>id</code>','UUID','PK'],
+    ['<code>titulo</code>','str','Resumo do incidente'],
+    ['<code>descricao</code>','str','Relato completo'],
+    ['<code>estado</code>','enum','ABERTO | EM_ATENDIMENTO | RESOLVIDO | EM_ATRASO'],
+    ['<code>criticidade</code>','enum','ALTA | MEDIA | BAIXA'],
+    ['<code>canal</code>','enum','WHATSAPP | WEB | ZABBIX | SISTEMA | <b>TELEGRAM</b> (v6, migração 0004)'],
+    ['<code>ref_externa</code>','str?','event_id do Zabbix — verificado ANTES de criar (idempotência)'],
+    ['<code>aberto_por_id</code>','UUID?','<b>null</b> quando canal=ZABBIX (sem usuário solicitante)'],
+    ['<code>atendido_por_id</code>','UUID?','Preenchido em /atender'],
+    ['<code>assumido_em</code>','datetime?','Timestamp de quando técnico assumiu'],
+    ['<code>resolvido_em</code>','datetime?','Timestamp de quando foi resolvido'],
+    ['<code>resolucao</code>','str?','Descrição do que foi feito para resolver'],
+    ['<code>sla_prazo</code>','datetime','Calculado na criação via ConfigSLA[criticidade]'],
+    ['<code>anexos</code>','Anexo[]','<b>v6</b> (migração 0002): substitui <code>foto_url</code>; tipo FOTO | VIDEO | DOCUMENTO, url, nome, mime, tamanho, enviado_por, criado_em'],
+  ])}
+  <h3>Endpoints</h3>
+  ${tbl(['Rota','Método','Descrição','Permissão'],[
+    ['<code>/incidentes</code>','<span class="tag GET">GET</span>','Lista; filtros: estado, criticidade, canal, período, aberto_por','Autenticado'],
+    ['<code>/incidentes</code>','<span class="tag POST">POST</span>','Cria incidente; verifica idempotência (ref_externa); calcula SLA; notifica','Autenticado'],
+    ['<code>/incidentes/{id}</code>','<span class="tag GET">GET</span>','Detalhe com histórico de estados','Autenticado'],
+    ['<code>/incidentes/{id}/atender</code>','<span class="tag POST">POST</span>','Assume atendimento (ABERTO|EM_ATRASO → EM_ATENDIMENTO)','pode_atender'],
+    ['<code>/incidentes/{id}/resolver</code>','<span class="tag POST">POST</span>','Resolve; calcula MTTR = resolvido_em − assumido_em (min)','pode_atender'],
+    ['<code>/incidentes/{id}/anexos</code>','<span class="tag POST">POST</span>','Anexa arquivos já enviados por <code>/uploads</code>; audita ANEXAR_INCIDENTE; notifica o grupo','Autor, atendente ou pode_atender'],
+    ['<code>/incidentes/{id}/anexos/{anexo}/download</code>','<span class="tag GET">GET</span>','Baixa o arquivo com o nome original (Content-Disposition)','Autenticado'],
+  ])}
+  <h3>MTTR — Mean Time To Resolve</h3>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:6px"><code>mttr_min = (resolvido_em - assumido_em) / 60</code> — calculado em minutos inteiros ao resolver. Gravado no <code>detalhe</code> do LogAuditoria e disponível nos relatórios do Admin. Confirmado em testes: MTTR de 15 e 20 min calculados corretamente.</p>
+  <h3>Idempotência para Zabbix</h3>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:6px">Antes de criar, verifica se já existe incidente com o mesmo <code>ref_externa</code>. Se existir, retorna o existente sem criar duplicata. Confirmado em testes: reenvio do mesmo <code>event_id</code> retorna o incidente original.</p>
+  <h3>Fluxo de estados</h3>
+  <div class="sflow">
+    <div class="sbox sa">ABERTO</div><div class="sarr">→</div>
+    <div class="sbox se">EM_ATENDIMENTO</div><div class="sarr">→</div>
+    <div class="sbox sr">RESOLVIDO</div>
+  </div>
+  <div class="sflow" style="margin-top:6px">
+    <div class="sbox sa">ABERTO</div><div class="sarr">→</div>
+    <div class="sbox sl">EM_ATRASO</div><div class="sarr">→</div>
+    <div class="sbox se">EM_ATENDIMENTO</div><div class="sarr">→</div>
+    <div class="sbox sr">RESOLVIDO</div>
+  </div>
+  <div class="sflow" style="margin-top:6px">
+    <div class="sbox sa">ABERTO (Zabbix)</div><div class="sarr">→</div>
+    <div class="sbox sr">RESOLVIDO</div><div style="font-size:10px;color:var(--muted);margin-left:4px">(automático via event_value=0)</div>
+  </div>
+  <h3>Transições válidas e inválidas (confirmado em testes)</h3>
+  ${tbl(['Transição','Permitida?','HTTP'],[
+    ['ABERTO → EM_ATENDIMENTO','✅ Sim','200'],
+    ['ABERTO → EM_ATRASO (via SLA Monitor)','✅ Sim (automático)','—'],
+    ['EM_ATRASO → EM_ATENDIMENTO','✅ Sim','200'],
+    ['EM_ATENDIMENTO → RESOLVIDO','✅ Sim','200'],
+    ['ABERTO → RESOLVIDO (Zabbix event_value=0)','✅ Sim (automático)','—'],
+    ['EM_ATENDIMENTO → EM_ATENDIMENTO','❌ Não — já em atendimento','400'],
+    ['RESOLVIDO → EM_ATENDIMENTO (reabrir)','❌ Não','400'],
+    ['RESOLVIDO → RESOLVIDO (dupla resolução)','❌ Não','400'],
+  ])}
+  <div class="note zbx">Concorrência: se dois técnicos tentam assumir o mesmo incidente, o primeiro vence — o segundo recebe 400 (estado já é EM_ATENDIMENTO). Zabbix que envia event_value=0 para incidente já RESOLVIDO manualmente: sem erro, sem alteração de estado — retorna {acao: "fechado"} com estado preservado.</div>
+  <div class="note">📋 <b>REQ-06:</b> Um técnico pode registrar <b>e</b> atender o próprio incidente — quando ele mesmo identifica e corrige um problema. Não há restrição de que <code>aberto_por_id ≠ atendido_por_id</code>. Confirmado em testes: mesmo <code>usr-id</code> nas duas colunas é válido.</div>
+  <h3>Comportamentos confirmados em testes (Rodada 12)</h3>
+  ${tbl(['Comportamento','Resultado'],[
+    ['Estado inicial','Sempre ABERTO — sem outros estados iniciais possíveis'],
+    ['assumido_em e atendido_por_id','Ambos preenchidos ao assumir; atendido_por_id aponta para o técnico que assumiu'],
+    ['MTTR','Calculado em minutos inteiros: (resolvido_em − assumido_em) / 60. MTTR=0 quando assumido e resolvido quase simultaneamente'],
+    ['Concorrência','Primeiro técnico vence; segundo recebe 400 imediatamente — sem "last write wins"'],
+    ['Transições proibidas (400)','EM_ATENDIMENTO→EM_ATENDIMENTO, RESOLVIDO→EM_ATENDIMENTO (reabrir), RESOLVIDO→RESOLVIDO (dupla resolução)'],
+  ])}`);
+
+
+LEVELS['n4-sla']=()=>n4panel('SLA Monitor','API Backend · Incidentes',`
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Tarefa Celery beat executada a cada 5 minutos. Verifica incidentes com prazo vencido e estado ainda ativo, transiciona para EM_ATRASO e aciona escalonamento.</p>
+  <h3>Query executada</h3>
+  <pre>SELECT * FROM incidentes
+WHERE estado IN ('ABERTO', 'EM_ATRASO')
+  AND sla_prazo &lt;= NOW()</pre>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:4px">Comparação <code>&lt;=</code> (menor ou igual) — inclui incidentes cujo prazo venceu exatamente no momento do check. Confirmado em testes: SLA editado para <strong>0h</strong> faz o incidente vencer imediatamente ao ser criado (<code>sla_prazo = NOW()</code>), sendo escalado no próximo check.</p>
+  <h3>Estados monitorados</h3>
+  ${tbl(['Estado','Ação ao vencer SLA'],[
+    ['ABERTO','Transiciona para EM_ATRASO; notifica coordenação; emite WS evento'],
+    ['EM_ATRASO','Já escalado — renotifica se configurado'],
+    ['EM_ATENDIMENTO','<b>Não escalonado</b> — técnico já assumiu'],
+    ['RESOLVIDO','<b>Ignorado</b> — fora do escopo do SLA Monitor'],
+  ])}
+  <h3>Prazos por criticidade (ConfigSLA)</h3>
+  ${tbl(['Criticidade','Prazo padrão','Editável pelo admin?'],[
+    ['ALTA','2 horas','Sim'],
+    ['MEDIA','24 horas (1 dia útil)','Sim'],
+    ['BAIXA','72 horas (3 dias úteis)','Sim'],
+  ])}
+  <h3>Comportamentos confirmados em testes</h3>
+  ${tbl(['Comportamento','Resultado'],[
+    ['Múltiplos incidentes vencidos em um único check','Todos são escalonados na mesma execução — sem limite por rodada'],
+    ['SLA editado pelo admin','Afeta apenas incidentes criados APÓS a edição — incidentes existentes mantêm o prazo original calculado na criação'],
+    ['EM_ATENDIMENTO com SLA vencido','Estado NÃO é alterado — técnico já assumiu, sem re-escalonamento'],
+  ])}
+  <div class="note zbx">Incidentes criados pelo Zabbix (canal=ZABBIX) seguem o mesmo SLA — origem automática não isenta do prazo.</div>
+  <h3>Comportamentos confirmados em testes (Rodada 12)</h3>
+  ${tbl(['Comportamento','Resultado'],[
+    ['SLA=0h','Prazo = NOW() ao criar → escalado imediatamente no próximo check (operador <= é inclusivo)'],
+    ['Editar SLA','Apenas novos incidentes usam o SLA editado — incidentes existentes mantêm o prazo calculado na criação (imutável)'],
+    ['10 incidentes vencidos simultâneos','Todos escalados na mesma execução; 10 notificações de coordenação geradas'],
+    ['Escalonamento notifica','Coordenação — NÃO quem abriu o incidente'],
+    ['EM_ATRASO no segundo check','Estado não regride para ABERTO — preservado até técnico assumir'],
+    ['RESOLVIDO com SLA no passado','Completamente ignorado pelo monitor — fora do escopo da query'],
+  ])}`);
+
+
+LEVELS['n4-aud']=()=>n4panel('Auditoria Service','API Backend · Auditoria',`
+  <h3>Modelo: LogAuditoria</h3>
+  ${tbl(['Campo','Tipo','Descrição'],[
+    ['<code>id</code>','UUID','PK'],
+    ['<code>usuario_id</code>','UUID?','<b>null</b> para ações do sistema (Zabbix, Celery beat, fechamento automático)'],
+    ['<code>acao</code>','str','Ver tabela abaixo'],
+    ['<code>entidade</code>','str','Incidente | Ativo | Usuario'],
+    ['<code>entidade_id</code>','UUID','ID do objeto afetado'],
+    ['<code>canal</code>','enum','WEB | WHATSAPP | ZABBIX | SISTEMA | TELEGRAM'],
+    ['<code>detalhe</code>','JSONB','Dados contextuais da operação'],
+    ['<code>criado_em</code>','datetime','Imutável — sem UPDATE/DELETE no schema'],
+  ])}
+  <h3>Ações registradas e logs esperados por fluxo</h3>
+  ${tbl(['Fluxo','Logs de auditoria gerados (em ordem)'],[
+    ['Incidente via WhatsApp','CRIAR_INCIDENTE (canal=WHATSAPP)'],
+    ['Incidente via Web','CRIAR_INCIDENTE (canal=WEB)'],
+    ['Incidente via Zabbix','CRIAR_INCIDENTE (canal=ZABBIX, usuario_id=null)'],
+    ['Técnico assume','ATENDER_INCIDENTE (canal=WEB)'],
+    ['Técnico resolve','RESOLVER_INCIDENTE (canal=WEB, detalhe: {mttr_min})'],
+    ['SLA estoura','ESCALONAR_INCIDENTE (canal=SISTEMA, usuario_id=null)'],
+    ['Zabbix recupera','FECHAR_AUTOMATICO (canal=ZABBIX, usuario_id=null)'],
+    ['Cadastrar ativo','CRIAR_ATIVO'],
+    ['Validar ativo','VALIDAR_ATIVO | INVALIDAR_ATIVO'],
+    ['Bloquear usuário','BLOQUEAR_USUARIO'],
+    ['Alterar permissões','ATUALIZAR_PERMISSOES'],
+    ['Vincular WhatsApp','VINCULAR_WHATSAPP | DESVINCULAR_WHATSAPP'],
+    ['Incidente via Telegram (v6)','CRIAR_INCIDENTE (canal=TELEGRAM)'],
+    ['Anexar arquivos (v6)','ANEXAR_INCIDENTE (detalhe: tipos e quantidade)'],
+    ['Vincular Telegram (v6)','VINCULAR_TELEGRAM | DESVINCULAR_TELEGRAM'],
+    ['Configuração (v6)','ATUALIZAR_CONFIG · ATUALIZAR_SLA · ATUALIZAR_FOTO_ATIVO · DESBLOQUEAR_USUARIO'],
+  ])}
+  <h3>Contagem de logs por fluxo E2E (confirmado em testes)</h3>
+  ${tbl(['Fluxo E2E','Logs gerados'],[
+    ['WhatsApp → incidente → notificação','1 log (CRIAR_INCIDENTE)'],
+    ['Zabbix completo (alerta→escalonamento→atendimento→fechamento)','4 logs'],
+    ['Resolução manual (criar→atender→resolver)','3 logs'],
+    ['Inventário (cadastrar→validar)','2 logs'],
+  ])}
+  <div class="note">Append-only garantido no banco: a migração 0001 cria o trigger <code>trg_log_auditoria_imutavel</code> (BEFORE UPDATE OR DELETE → erro) no PostgreSQL. Exportação em <code>GET /auditoria/export.csv</code>.</div>
+  <div class="note zbx">📋 <b>Confirmado em testes:</b> operações que <strong>falham</strong> (ex: 403, 401, 400) <strong>não geram log</strong> de auditoria — apenas operações bem-sucedidas são registradas. Isso garante que tentativas rejeitadas não poluam o histórico.</div>
+  <h3>Canal por ação (confirmado em testes — Rodada 12)</h3>
+  ${tbl(['Ação','canal','usuario_id','detalhe relevante'],[
+    ['CRIAR_INCIDENTE (web)','WEB','ID do usuário','—'],
+    ['CRIAR_INCIDENTE (WhatsApp)','WHATSAPP','ID do usuário WA','—'],
+    ['CRIAR_INCIDENTE (Zabbix)','ZABBIX','null','—'],
+    ['ESCALONAR_INCIDENTE (Celery)','SISTEMA','null','—'],
+    ['FECHAR_AUTOMATICO (Zabbix)','ZABBIX','null','—'],
+    ['RESOLVER_INCIDENTE','WEB','ID do técnico','detalhe: {mttr_min: N}'],
+    ['ATUALIZAR_PERMISSOES','WEB','ID do admin','detalhe: {permissao: valor}'],
+    ['VINCULAR_WHATSAPP','WEB','ID do usuário','detalhe: {numero: "+55…"}'],
+    ['VALIDAR_ATIVO / INVALIDAR_ATIVO','WEB','ID de quem validou','—'],
+  ])}`);
+
+
+LEVELS['n4-asv']=()=>n4panel('Ativo Service','API Backend · Inventário',`
+  <h3>Fluxo de validação</h3>
+  <div class="sflow"><div class="sbox sa">PENDENTE</div><div class="sarr">→</div><div class="sbox sr">VALIDADO</div></div>
+  <div class="sflow" style="margin-top:6px"><div class="sbox sa">PENDENTE</div><div class="sarr">→</div><div class="sbox sl">INVALIDO</div></div>
+  <p style="font-size:11px;color:var(--muted);margin-top:10px;line-height:1.7">Qualquer usuário autenticado cadastra (estado inicial: PENDENTE). Apenas <code>pode_cadastrar_ativo</code> valida ou invalida.</p>
+  <h3>Verificação de patrimônio único (antes de criar)</h3>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:6px">Antes de criar um ativo, o sistema verifica se já existe um com o mesmo número de patrimônio. Campo <code>patrimonio</code> com constraint <code>UNIQUE</code> no PostgreSQL. Campo vazio não verifica duplicata.</p>
+  ${tbl(['Estado do existente','HTTP','Mensagem retornada','Ativo existente na resposta?'],[
+    ['PENDENTE','<b>409</b>','Esse equipamento já foi enviado para validação.','Sim — id e estado'],
+    ['VALIDADO','<b>409</b>','Esse equipamento já está cadastrado.','Sim — id e estado'],
+    ['INVALIDO','<b>409</b>','Esse equipamento foi recusado anteriormente.','Sim — id e estado (opção de reenvio via TI)'],
+  ])}
+  <p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:6px">O bot WhatsApp usa o estado do existente para formatar a mensagem de resposta adequada ao usuário.</p>
+  <h3>Regras de transição (confirmado em testes)</h3>
+  ${tbl(['Transição','Permitida?','HTTP'],[
+    ['PENDENTE → VALIDADO','✅ Sim','200'],
+    ['PENDENTE → INVALIDO','✅ Sim','200'],
+    ['INVALIDO → VALIDADO (re-validar)','❌ Não — apenas PENDENTE pode ser validado','400'],
+    ['VALIDADO → INVALIDO (invalidar depois)','❌ Não — apenas PENDENTE pode ser invalidado','400'],
+  ])}
+  <h3>OCR Adapter — extração de dados da plaqueta</h3>
+  ${tbl(['Situação','Confiança','Comportamento'],[
+    ['Plaqueta legível','≥ 90%','Dados preenchidos automaticamente; usuário confirma antes de enviar'],
+    ['Plaqueta ilegível ou parcial','&lt; 90%','Alerta exibido; campos habilitados para preenchimento manual'],
+  ])}
+  <div class="note">Threshold de 90% confirmado em testes. OCR retorna <code>{patrimonio, modelo, num_serie, confianca}</code>. O preview OCR é exibido <strong>antes</strong> do POST /ativos — usuário pode corrigir campos antes de confirmar.</div>
+  <h3>Comportamentos confirmados em testes (Rodada 12)</h3>
+  ${tbl(['Comportamento','Resultado'],[
+    ['VALIDADO e INVALIDO são estados finais','Qualquer tentativa de mudança de estado retorna 400 — sem exceções'],
+    ['409 inclui estado do existente na resposta','Corpo: <code>{status:409, estado:"PENDENTE"|"VALIDADO"|"INVALIDO", ativo:{id,estado}}</code>'],
+    ['Patrimônio vazio ("")','Sem verificação de duplicata — dois ativos com patrimônio vazio são aceitos (sem conflito UNIQUE)'],
+    ['WS ao criar ativo','Evento <code>ativo.pendente</code> emitido imediatamente com <code>{evento, id}</code>'],
+    ['Sem pode_cadastrar_ativo → validar','403 — estado do ativo preservado como PENDENTE'],
+  ])}`);
+
+
+LEVELS['n4-ema']=()=>n4panel('Email Notifier','API Backend · Notificações',`
+  <h3>Eventos e destinatários</h3>
+  ${tbl(['Evento','Destinatário','Assunto'],[
+    ['Incidente criado (qualquer canal)','Grupo de atendimento','[Incidente] {id} — {criticidade}'],
+    ['Incidente resolvido','Usuário que abriu (null se Zabbix → admin)','[Incidente] {id} resolvido'],
+    ['SLA estourado','Coordenação / grupo de escalonamento','[ALERTA] SLA estourado {id}'],
+    ['Arquivo anexado (v6)','Grupo de atendimento','[Incidente] {id} — novo anexo'],
+    ['Novo usuário cadastrado','Administrador(es)','Novo usuário: {email}'],
+    ['Usuário bloqueado','O próprio usuário','Seu acesso foi bloqueado'],
+  ])}
+  <h3>Notificações por fluxo E2E (confirmado em testes)</h3>
+  ${tbl(['Fluxo','E-mails enviados'],[
+    ['Incidente via WhatsApp (criar)','1 — para grupo de atendimento'],
+    ['Zabbix completo','1 criação + 1 escalonamento (se SLA vencer)'],
+    ['Resolução','1 — para quem abriu o incidente'],
+  ])}
+  <div class="note">Envio assíncrono: a notificação é gravada na tabela <code>notificacoes</code> (outbox) na mesma transação e entregue pelo worker Celery (fila visível em Admin). Configuração SMTP em variáveis de ambiente: <code>SMTP_HOST</code>, <code>SMTP_PORT</code>, <code>SMTP_USER</code>, <code>SMTP_PASS</code> — em uso: Gmail.</div>
+  <div class="note tg">📎 <b>v6 — anexos no e-mail:</b> e-mails de <code>incidente.criado</code> e <code>incidente.anexo</code> levam fotos, vídeos e documentos do chamado, até <b>18 MB</b> no total; o que não couber é listado no corpo com o aviso do limite.</div>
+  <div class="note zbx">📋 <b>Confirmado em testes:</b> quando <code>aberto_por_id=null</code> (incidente Zabbix), a notificação de resolução <strong>não é enviada para null</strong> — sem tentativa de e-mail para destinatário inexistente.</div>
+  <h3>Destinatários confirmados em testes (Rodada 12)</h3>
+  ${tbl(['Evento','Vai para','NÃO vai para'],[
+    ['Incidente criado','grupo_atendimento','—'],
+    ['Incidente resolvido','quem abriu (usuario.email)','técnico que resolveu'],
+    ['SLA estoura','coordenação','quem abriu o incidente'],
+    ['Novo usuário','admins','o próprio usuário'],
+    ['Usuário bloqueado','o usuário bloqueado','admins'],
+    ['Zabbix resolvido (aberto_por=null)','nenhum destinatário individual','—'],
+  ])}`);
+
+
+LEVELS['n4-wno']=()=>n4panel('WA Notifier','API Backend · Notificações (modo mock)',`
+  <div class="note off">⏸️ <b>Em modo mock desde 17/11/2026.</b> Mesmo antes do bloqueio, a Meta aceitava o envio mas descartava a mensagem (erro 131031 / 141010: empresa não verificada). As notificações seguem por e-mail e Telegram.</div>
+  <h3>Eventos e destinatários</h3>
+  ${tbl(['Evento','Destinatário','Template Meta?'],[
+    ['Incidente criado','Grupo de atendimento com WA vinculado','Não (dentro da janela 24h)'],
+    ['Incidente resolvido','Usuário que abriu (se tem WA vinculado)','Não'],
+    ['SLA estourado','Grupo de escalonamento','<b>Sim</b> — template pré-aprovado obrigatório'],
+    ['Zabbix: incidente criado','Grupo de atendimento','Não'],
+  ])}
+  <h3>Notificações por fluxo E2E (confirmado em testes)</h3>
+  ${tbl(['Fluxo','Mensagens WA enviadas'],[
+    ['Incidente via WhatsApp (criar)','1 — para grupo de atendimento'],
+    ['Zabbix completo','1 criação + 1 escalonamento (se SLA vencer)'],
+    ['Resolução','1 — para quem abriu'],
+  ])}
+  <div class="note zbx">Incidentes ZABBIX notificam o grupo de atendimento imediatamente mesmo sem <code>aberto_por_id</code> — confirmado em testes. Template de SLA deve estar pré-aprovado no Meta antes de ir para produção.</div>
+  <div class="note">📋 <b>REQ-15:</b> Notificação WA na resolução é enviada <b>somente</b> se o usuário que abriu o incidente tiver número de WhatsApp vinculado ao perfil (<code>whatsapp ≠ null</code>). Sem número, apenas e-mail é enviado — confirmado em testes.</div>
+  <h3>Destinatários confirmados em testes (Rodada 12)</h3>
+  ${tbl(['Evento','Vai para (WA)','NÃO vai para'],[
+    ['Incidente criado','grupo_atendimento (WA vinculado)','—'],
+    ['Incidente resolvido','quem abriu (se whatsapp≠null)','usuario.whatsapp=null'],
+    ['SLA estoura','coordenação','quem abriu o incidente'],
+    ['Zabbix resolvido','nenhum individual (aberto_por=null)','—'],
+  ])}`);
+
+
+// ── N4 Interface Web ──────────────────────────────────────────────────────────
+LEVELS['n4-lgv']=()=>n4panel('Login View','Interface Web · Autenticação',`
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Única tela pública da SPA. Exibe o botão "Entrar com Google". Ao clicar, redireciona para <code>GET /auth/google</code> na API Backend, que inicia o fluxo OAuth2. Após o callback, recebe o JWT na URL (<code>/auth/callback?token=…</code>), armazena em memória e redireciona para <code>/incidentes</code>.</p>
+  <h3>Fluxo OAuth na SPA</h3>
+  ${tbl(['Passo','Onde','Ação'],[
+    ['1','Login View','Usuário clica em "Entrar com Google"'],
+    ['2','API Backend','<code>GET /auth/google</code> → redireciona ao Google'],
+    ['3','Google','Usuário autoriza; Google redireciona para <code>/auth/callback</code>'],
+    ['4','API Backend','Troca code por tokens; retorna JWT como query param'],
+    ['5','Login View','Captura JWT da URL; remove da URL (history.replaceState); armazena em memória'],
+    ['6','Router','Redireciona para <code>/incidentes</code>'],
+  ])}
+  <div class="note">JWT nunca é gravado em localStorage ou cookie — fica apenas em memória JS (variável de módulo). Ao fechar a aba, o JWT é perdido e o usuário precisa logar novamente.</div>`);
+
+LEVELS['n4-rou']=()=>n4panel('Router / Auth Guard','Interface Web · Navegação',`
+  <h3>Rotas e guardas</h3>
+  ${tbl(['Rota','Componente','Guarda'],[
+    ['<code>/login</code>','Login View','Público — redireciona para /incidentes se já logado'],
+    ['<code>/incidentes</code>','Incidentes View','JWT válido'],
+    ['<code>/incidentes/:id</code>','Detalhe do Incidente','JWT válido'],
+    ['<code>/inventario</code>','Inventário View','JWT válido'],
+    ['<code>/perfil</code>','Perfil View','JWT válido'],
+    ['<code>/admin</code>','Admin Panel','JWT válido + is_admin'],
+    ['<code>/admin/usuarios</code>','Gestão de Usuários','JWT válido + is_admin'],
+    ['<code>/admin/slas</code>','Configuração de SLAs','JWT válido + is_admin'],
+    ['<code>/admin/auditoria</code>','Log de Auditoria','JWT válido + is_admin'],
+    ['qualquer outra','Redirect 404','—'],
+  ])}
+  <h3>Refresh automático do JWT</h3>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:8px">O Router registra um timer que chama <code>GET /auth/refresh</code> 5 minutos antes da expiração do JWT atual, obtém um novo token e atualiza a memória sem interromper o usuário. Se o refresh falhar (sessão revogada), redireciona para <code>/login</code>.</p>`);
+
+LEVELS['n4-prf']=()=>n4panel('Perfil View','Interface Web · Usuário',`
+  <h3>Funcionalidades</h3>
+  ${tbl(['Funcionalidade','Descrição','Rota API'],[
+    ['Ver dados do perfil','Nome, e-mail Google, permissões atuais (somente leitura)','<code>GET /usuarios/me</code>'],
+    ['Vincular WhatsApp','Campo para inserir número; validação de formato E.164 (+55…)','<code>PUT /usuarios/me/whatsapp</code>'],
+    ['Desvincular WhatsApp','Remove o número; usuário para de receber notificações WA','<code>PUT /usuarios/me/whatsapp</code> (corpo vazio)'],
+    ['Telegram (v6)','Mostra o link <code>t.me/&lt;bot&gt;</code> (nome via <code>GET /auth/config</code> → getMe) e o passo a passo: Iniciar → 📱 Compartilhar meu número','<code>GET /auth/config</code>'],
+    ['Desvincular Telegram (v6)','Remove o chat_id; para de receber pelo Telegram','<code>DELETE /usuarios/me/telegram</code>'],
+  ])}
+  <div class="note">Sem o número de WhatsApp vinculado, o usuário não consegue usar o bot nem receber notificações por WA. A tela deixa isso claro com um banner de aviso.</div>
+  <div class="note">📋 <b>Confirmado em testes (Rodada 12):</b> vinculação e desvinculação do WA têm efeito imediato — a próxima resolução de incidente já usa (ou ignora) o novo número, sem necessidade de novo login.</div>`);
+
+LEVELS['n4-ntf']=()=>n4panel('Notificações WS','Interface Web · Tempo Real',`
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Mantém uma conexão WebSocket com a API Backend para receber eventos em tempo real. Atualiza o estado local do React sem o usuário recarregar a página. Exibe toasts de notificação para eventos relevantes.</p>
+  <h3>Eventos recebidos</h3>
+  ${tbl(['Evento','Quem recebe','Ação na UI'],[
+    ['<code>incidente.criado</code>','Grupo de atendimento','Adiciona à lista; exibe toast laranja'],
+    ['<code>incidente.assumido</code>','Quem abriu o incidente','Atualiza estado na lista; toast azul'],
+    ['<code>incidente.resolvido</code>','Quem abriu o incidente','Move para "resolvidos"; toast verde'],
+    ['<code>incidente.em_atraso</code>','Grupo de atendimento','Badge vermelho na lista; toast urgente'],
+    ['<code>ativo.pendente</code>','Usuários com pode_cadastrar_ativo','Badge no menu Inventário; toast'],
+  ])}
+  <h3>Estrutura do evento WebSocket</h3>
+  <pre>{ "evento": "incidente.criado", "id": "INC-XXXX", "criticidade": "ALTA" }</pre>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:4px">Todo evento contém <code>evento</code> (tipo), <code>id</code> (entidade afetada) e dados contextuais relevantes (<code>criticidade</code> para incidentes). Confirmado em testes.</p>
+  <h3>Reconexão automática com backoff exponencial</h3>
+  ${tbl(['Tentativa','Espera antes de reconectar'],[
+    ['1ª','1 s'],
+    ['2ª','2 s'],
+    ['3ª','4 s'],
+    ['4ª','8 s'],
+    ['5ª+','30 s (máximo)'],
+  ])}
+  <p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:8px">Após reconectar, faz <code>GET /incidentes?since={último_timestamp}</code> para recuperar eventos perdidos durante a desconexão. Eventos recuperados são processados na ordem original.</p>
+  <h3>Comportamentos confirmados em testes (Rodada 12)</h3>
+  ${tbl(['Comportamento','Resultado'],[
+    ['5 tipos de evento distintos','incidente.criado, incidente.assumido, incidente.resolvido, incidente.em_atraso, ativo.pendente — todos confirmados em 1 teste'],
+    ['Backoff exponencial','1→2→4→8→30s (máximo 30s) — sequência crescente e limitada'],
+    ['Recuperação pós-reconexão','GET /incidentes?since=timestamp retorna incidentes criados no intervalo de desconexão'],
+    ['evento ativo.pendente','Emitido com {evento, id} ao criar ativo — TI vê em tempo real sem recarregar'],
+  ])}`);
+
+
+LEVELS['n4-inc']=()=>n4panel('Incidentes View','Interface Web · Incidentes',`
+  <h3>Funcionalidades</h3>
+  ${tbl(['Funcionalidade','Descrição','Permissão'],[
+    ['Listar incidentes','Tabela com filtros: estado, criticidade, canal (Manual/WA/Zabbix), período','Autenticado'],
+    ['Ver detalhe','Histórico de estados, quem abriu, quem atendeu, SLA restante/estourado','Autenticado'],
+    ['Registrar incidente','Formulário: título, descrição, criticidade, foto opcional','Autenticado'],
+    ['Assumir atendimento','Botão no detalhe; muda estado para EM_ATENDIMENTO','pode_atender'],
+    ['Registrar resolução','Formulário de conclusão com campo de descrição do que foi feito','pode_atender'],
+    ['Anexos (v6)','Seção "Anexos" no detalhe: miniatura de fotos, player de vídeo, ícone de documento; botão <b>Baixar</b> (download autenticado com nome original); enviar mais arquivos','Autenticado'],
+  ])}
+  <h3>Formulário de registro — campos</h3>
+  ${tbl(['Campo','Tipo','Obrigatório'],[
+    ['Título','Texto curto (max 120 chars)','Sim'],
+    ['Descrição','Texto longo','Sim'],
+    ['Criticidade','Select: Alta / Média / Baixa','Sim'],
+    ['Anexos','Fotos, vídeos e documentos (opcional, vários)','Não'],
+  ])}
+  <h3>Diferenciação visual de canais</h3>
+  ${tbl(['Canal','Indicador visual'],[
+    ['WEB','Badge cinza "Web"'],
+    ['WHATSAPP','Badge verde "WhatsApp"'],
+    ['TELEGRAM (v6)','Badge azul "Telegram"'],
+    ['ZABBIX','Badge laranja "Zabbix" + ícone 📡 + link para o evento no Zabbix'],
+  ])}
+  <div class="note">Incidentes em estado EM_ATRASO aparecem com borda vermelha e contador de atraso. O SLA restante é exibido em tempo real via contador regressivo.</div>`);
+
+LEVELS['n4-inv']=()=>n4panel('Inventário View','Interface Web · Inventário',`
+  <h3>Funcionalidades</h3>
+  ${tbl(['Funcionalidade','Descrição','Permissão'],[
+    ['Listar ativos','Tabela com filtros: estado (Pendente/Validado/Inválido), tipo','Autenticado'],
+    ['Cadastrar ativo','Formulário com upload de foto da plaqueta','Autenticado'],
+    ['Preview e OCR','Após upload, exibe preview da foto e os dados extraídos pelo OCR (confiança ≥ 90%) para confirmação','Autenticado'],
+    ['OCR baixa confiança','Se confiança &lt; 90%, exibe alerta e habilita preenchimento manual dos campos','Autenticado'],
+    ['Ver pendentes','Fila de equipamentos aguardando validação','pode_cadastrar_ativo'],
+    ['Validar ativo','Aprova cadastro pendente; pode corrigir campos antes de confirmar','pode_cadastrar_ativo'],
+    ['Invalidar ativo','Rejeita cadastro com campo de motivo','pode_cadastrar_ativo'],
+  ])}
+  <h3>Fluxo de cadastro com foto</h3>
+  ${tbl(['Passo','O que acontece'],[
+    ['1 — Upload','Usuário seleciona ou tira foto da plaqueta'],
+    ['2 — Preview','Imagem exibida na tela para conferência'],
+    ['3 — OCR','<code>POST /ativos/ocr-preview</code> retorna dados extraídos (patrimônio, modelo)'],
+    ['4 — Confirmação','Usuário revisa e corrige campos se necessário; confirma o envio'],
+    ['5 — Cadastro','<code>POST /ativos</code> cria o ativo em estado PENDENTE'],
+  ])}
+  <div class="note">O OCR é feito antes do cadastro definitivo para que o usuário possa corrigir erros de leitura da plaqueta. Plaquetas ilegíveis podem ter os campos preenchidos manualmente.</div>`);
+
+LEVELS['n4-adm']=()=>n4panel('Admin Panel','Interface Web · Administração',`
+  <h3>Seções e funcionalidades</h3>
+  ${tbl(['Seção','Funcionalidades'],[
+    ['Usuários','Lista todos; vê novos aguardando revisão; bloqueia/desbloqueia; concede/revoga permissões individuais'],
+    ['SLAs','Edita prazos por criticidade (horas); define grupo de escalonamento para cada nível'],
+    ['Configuração do bot','Ativa/desativa canais (<code>canal_whatsapp_ativo</code> desligado desde 17/11/2026); grupo de atendimento e coordenação por criticidade'],
+    ['Notificações (v6)','Fila (outbox) com canal EMAIL / TELEGRAM / WHATSAPP, status e erro de cada entrega'],
+    ['Auditoria','Log com filtros: usuário, ação, canal, período; exporta CSV; inclui ações automáticas do Zabbix e Celery'],
+    ['Relatórios','MTTR médio; incidentes por canal (Web, WhatsApp, Telegram, Zabbix); distribuição por criticidade; ativos validados vs. pendentes'],
+  ])}
+  <h3>Alerta de segurança — mínimo de admins</h3>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:8px">O painel bloqueia a remoção de <code>is_admin</code> ou o bloqueio do último administrador ativo, exibindo mensagem de erro antes de confirmar a ação.</p>
+  <div class="note zbx">O relatório de incidentes por canal permite avaliar a cobertura do monitoramento automático: um alto percentual de incidentes ZABBIX indica boa cobertura; um percentual baixo pode indicar que triggers importantes ainda não estão configurados.</div>
+  <div class="note">📐 <b>Nota de layout no N1:</b> o Administrador (x=385..530) e o Sistema de Incidentes (x=290..490) têm coordenadas X sobrepostas no diagrama (interseção: 385..490px). Isso é intencional — a seta <code>painel web</code> termina em x=450, que cai dentro do intervalo de ambos. A distinção correta é pelo eixo Y: Administrador fica na linha de pessoas (y≈30) e o Sistema na linha central (y≈230). Algoritmos de nearest(X) não conseguem distinguir esses dois nós — a verificação deve combinar X e Y.</div>`);
+
+LEVELS['n4-apc-web']=()=>n4panel('API Client','Interface Web · Integração',`
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Instância Axios configurada como singleton. Injeta o JWT em toda requisição via interceptor. Trata erros globalmente antes de repassar ao componente chamador.</p>
+  <h3>Interceptors</h3>
+  ${tbl(['Interceptor','Ação'],[
+    ['Request','Adiciona header <code>Authorization: Bearer {jwt}</code> em toda requisição'],
+    ['Response 401','JWT expirado: tenta refresh; se falhar, redireciona para /login'],
+    ['Response 403','Sem permissão: exibe toast "Você não tem permissão para esta ação"'],
+    ['Response 5xx','Erro do servidor: exibe toast "Erro interno. Tente novamente." e loga no console'],
+    ['Network error','Sem conexão: exibe banner "Sem conexão com o servidor"'],
+  ])}
+  <h3>WebSocket</h3>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:8px">Além do HTTP, o API Client inicializa a conexão WebSocket autenticada (<code>wss://…/ws?token={jwt}</code>) ao montar a aplicação e a repassa ao componente Notificações WS.</p>`);
+
+// ── N4 v6 — Telegram, anexos e WhatsApp desligado ────────────────────────────
+LEVELS['n4-tga']=()=>n4panel('Telegram Adapter','Bot · Componente (bot/telegram.py) · v6',`
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Canal principal desde a v6 (bot <code>o bot do Telegram</code>). Recebe mensagens por <b>long polling</b> (<code>getUpdates</code>, timeout 50 s) numa thread do contêiner do bot: não precisa de URL pública, túnel nem empresa verificada. Cada mensagem é convertida para o formato que o Processor já entende (o mesmo do WhatsApp), então parser, transcrição, anexos e janela de 10 min funcionam igual. Chamados ficam com <code>canal=TELEGRAM</code>.</p>
+  <h3>Partes</h3>
+  ${tbl(['Classe','Papel','Interface que imita'],[
+    ['<code>TelegramAPI</code>','Cliente mínimo da Bot API: getMe, deleteWebhook, getUpdates, sendMessage, getFile/download','—'],
+    ['<code>TelegramChecker</code>','Usuário pelo chat_id (<code>GET /usuarios/by-telegram</code>); cache só de positivos','RemetenteChecker'],
+    ['<code>TelegramMedia</code>','Baixa arquivos pelo file_id (até 20 MB)','MediaDownloader'],
+    ['<code>TelegramSender</code>','sendMessage com teclado de resposta ou pedido de contato','WA Sender'],
+    ['<code>converter()</code>','Mensagem do Telegram → <code>{type:text|audio|image|video|document}</code>; foto usa a maior resolução','—'],
+    ['<code>TelegramBot</code>','Liga tudo; reaproveita o mesmo STT (um só Whisper na memória)','—'],
+  ])}
+  <h3>Fluxo de vinculação</h3>
+  ${tbl(['Passo','Quem','Ação'],[
+    ['1','Usuário','Salva o celular em Perfil (web) e abre o bot pelo link'],
+    ['2','Bot','<code>/start</code> de chat desconhecido → boas-vindas + botão <b>📱 Compartilhar meu número</b>'],
+    ['3','Usuário','Compartilha o contato (o Telegram só envia o número por esse botão)'],
+    ['4','Bot','Recusa contato de outra pessoa (<code>contact.user_id ≠ from.id</code>)'],
+    ['5','API','<code>POST /usuarios/vincular-telegram</code>: compara com o celular do perfil (com ou sem o nono dígito); grava <code>telegram_chat_id</code>; audita VINCULAR_TELEGRAM'],
+    ['6','Bot','"✅ Pronto, {nome}!" + menu de ajuda'],
+  ])}
+  <h3>Resiliência</h3>
+  ${tbl(['Situação','Comportamento'],[
+    ['Telegram/rede fora do ar','Nova tentativa com espera exponencial 1 → 2 → 4 … 60 s'],
+    ['Falha ao processar uma mensagem','O offset é confirmado antes: uma mensagem ruim não trava a fila; usuário recebe aviso de erro'],
+    ['Grupo ou canal','Ignorado — só conversa privada com o bot'],
+    ['TELEGRAM_BOT_TOKEN vazio','Canal desativado; o resto do bot continua'],
+  ])}
+  <div class="note tg">🔒 O token fica na URL da Bot API: <code>TelegramAPI</code> nunca registra URLs, e o <code>send_telegram</code> da API omite a URL nas mensagens de erro. Token só no <code>.env</code> (fora do git).</div>`);
+
+LEVELS['n4-gan']=()=>n4panel('Gerenciador de Anexos','Bot · Componente (Processor) · v6',`
+  <h3>Responsabilidades</h3>
+  <p style="font-size:11.5px;color:var(--muted);line-height:1.7">Decide a que registro cada arquivo recebido pelo chat pertence. Fotos, vídeos e documentos são enviados à API (<code>POST /uploads</code>) e ligados ao chamado (<code>POST /incidentes/{id}/anexos</code>) ou ao equipamento. Áudio não é guardado: só vira texto.</p>
+  <h3>Regras</h3>
+  ${tbl(['Situação','O que acontece'],[
+    ['Arquivo com legenda que descreve um problema','Abre o chamado com o texto da legenda (ou transcrição do vídeo) e anexa o arquivo'],
+    ['Arquivo até 10 min depois de abrir um chamado ou cadastrar um equipamento','Anexado a esse registro ("📎 Anexei ao INC-XXXX"); a janela é renovada'],
+    ['Arquivo sem contexto recente','Guardado; vai junto com o próximo relato do usuário em até 10 min'],
+    ['Foto num cadastro de equipamento','Vira a foto do ativo (<code>/ativos/{id}/foto</code>) e passa pelo OCR'],
+    ['Áudio','Transcrito e tratado como texto (abre chamado, cadastra equipamento, consulta…)'],
+    ['Vídeo','Trilha de áudio transcrita + arquivo anexado'],
+    ['Vídeo sem legenda logo após um chamado, cuja fala relata um problema','Pergunta: <b>Anexar ao INC-XXXX</b> ou <b>Novo chamado</b> (pode ser outro problema). Se a pessoa muda de assunto, o vídeo fica guardado para o próximo relato'],
+  ])}
+  <h3>Estado em memória</h3>
+  ${tbl(['Estrutura','Conteúdo','Validade'],[
+    ['<code>contexto[chave]</code>','Último chamado/cadastro do usuário','10 min (<code>JANELA_S=600</code>)'],
+    ['<code>midias_pendentes[chave]</code>','Arquivos guardados à espera de um relato','10 min'],
+    ['<code>pendentes[chave]</code>','Escolha de qual chamado resolver','10 min'],
+    ['<code>destino_pendente[chave]</code>','Vídeo aguardando a escolha: chamado recente ou novo','10 min'],
+  ])}
+  <div class="note">A chave é o número (WhatsApp) ou <code>tg:&lt;chat_id&gt;</code> (Telegram), então os dois canais não se misturam. O estado fica na memória do bot: reiniciar o contêiner o descarta.</div>`);
+
+LEVELS['n4-tgn']=()=>n4panel('Telegram Notifier','API Backend · Notificações · v6',`
+  <h3>Eventos e destinatários</h3>
+  ${tbl(['Evento','Destinatário (com telegram_chat_id)','Mensagem'],[
+    ['incidente.criado','Grupo de atendimento','🚨 Novo incidente INC-XXXX (criticidade) + descrição'],
+    ['incidente.anexo','Grupo de atendimento','📎 Novos arquivos no INC-XXXX'],
+    ['incidente.resolvido','Quem abriu o chamado','✅ Seu incidente INC-XXXX foi resolvido + resolução'],
+    ['sla.estourado','Administradores','⏰ SLA estourado: INC-XXXX'],
+  ])}
+  <h3>Entrega</h3>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7;margin-top:6px">Mesmo caminho do e-mail: registro na tabela <code>notificacoes</code> com <code>canal=TELEGRAM</code> → tarefa Celery → <code>delivery.send_telegram()</code> (<code>sendMessage</code>). Sem token configurado, roda em modo mock e só registra no log. Status e erro de cada entrega aparecem em Admin → Notificações.</p>
+  <div class="note tg">Diferente do WhatsApp, o Telegram não tem janela de 24 h nem templates: qualquer usuário que iniciou conversa com o bot pode ser notificado a qualquer momento.</div>`);
+
+LEVELS['n4-anx']=()=>n4panel('Anexos (Mídia)','API Backend · Componente (midia.py, routers/uploads, incidentes) · v6',`
+  <h3>Modelo: Anexo (migrações 0002 e 0003)</h3>
+  ${tbl(['Campo','Tipo','Descrição'],[
+    ['<code>id</code>','UUID','PK'],
+    ['<code>incidente_id</code>','FK','Chamado dono'],
+    ['<code>tipo</code>','enum','FOTO | VIDEO | DOCUMENTO (DOCUMENTO via <code>ALTER TYPE</code> no PostgreSQL)'],
+    ['<code>url</code>','str','<code>/media/&lt;uuid32&gt;.&lt;ext&gt;</code> — nome gerado, nunca o do usuário'],
+    ['<code>nome</code>','str?','Nome original (usado no download)'],
+    ['<code>mime</code>, <code>tamanho</code>','str, int','Validados no upload'],
+    ['<code>enviado_por_id</code>, <code>criado_em</code>','FK, datetime','Autoria'],
+  ])}
+  <h3>Tipos e limites</h3>
+  ${tbl(['Tipo','Formatos','Limite'],[
+    ['FOTO','JPEG, PNG, WEBP','10 MB'],
+    ['VIDEO','MP4, 3GP, MOV','25 MB'],
+    ['DOCUMENTO','PDF, DOC, DOCX, XLS, XLSX, ODT, ODS, TXT, CSV','25 MB'],
+  ])}
+  <h3>Endpoints</h3>
+  ${tbl(['Rota','Método','Descrição'],[
+    ['<code>/uploads</code>','<span class="tag POST">POST</span>','Recebe o arquivo, valida tipo/tamanho, grava no volume <code>media</code> e devolve <code>{url, tipo, nome}</code>'],
+    ['<code>/incidentes/{id}/anexos</code>','<span class="tag POST">POST</span>','Liga URLs enviadas ao chamado (só URLs válidas de <code>/media</code>)'],
+    ['<code>/incidentes/{id}/anexos/{anexo}/download</code>','<span class="tag GET">GET</span>','Download autenticado com <code>Content-Disposition</code> e nome original'],
+  ])}
+  <div class="note">A migração 0002 copiou os antigos <code>foto_url</code> para a tabela de anexos. O downgrade da 0003 se recusa a rodar se já existirem documentos (para não perder dados). Áudio nunca é guardado.</div>`);
+
+LEVELS['n4-wa-off']=()=>n4panel('WhatsApp — por que está desligado','N1 · Sistema Externo · v6',`
+  <div class="note off">⏸️ <b>Estado em 17/11/2026:</b> integração implementada e testada, canal desligado. <code>WA_MODE=mock</code>, <code>canal_whatsapp_ativo=false</code>, túnel parado; credenciais mantidas no <code>.env</code>.</div>
+  <h3>Linha do tempo</h3>
+  ${tbl(['Data','Fato'],[
+    ['14/11/2026','App Meta, número de teste, WABA e token permanente de usuário do sistema configurados; webhook ativo via Cloudflare quick tunnel; recebimento testado de ponta a ponta (HMAC aceito)'],
+    ['14/11/2026','Envio aceito pela API mas descartado pela Meta (131031 / health_status 141010): exige empresa verificada (CNPJ)'],
+    ['15/11/2026','Telegram adotado como canal de envio e de entrada (PR #6)'],
+    ['17/11/2026','Meta bloqueou a conta de desenvolvedor (code 200, subcode 5258005: "API access blocked"); WhatsApp desligado'],
+  ])}
+  <h3>Para religar</h3>
+  ${tbl(['Passo','Ação'],[
+    ['1','Contestar o bloqueio (Facebook → Status da conta) ou usar um portfólio verificado do CESUP/UFRGS'],
+    ['2','Verificar a empresa no Business Manager para liberar a entrega de mensagens'],
+    ['3','<code>WA_MODE=cloud</code> no .env, publicar o webhook numa URL fixa (o quick tunnel muda a cada reinício) e reativar o canal em Admin'],
+  ])}
+  <div class="note">Nada no código depende do WhatsApp estar ligado: o Telegram usa o mesmo Processor, parser, STT e Gerenciador de Anexos.</div>`);
+
+// ── Changelog ────────────────────────────────────────────────────────────────
+LEVELS['changelog']=()=>n4panel('Changelog — C4 Model','Histórico de correções e atualizações',`
+
+  <h3>v6.0 — Implementação de ponta a ponta (17/11/2026)</h3>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7">O modelo deixou de ser só especificação: o sistema está implementado no repositório <code>cesup_incidentes</code> e rodando em Docker Compose (7 contêineres). Esta versão documenta o que foi construído e as mudanças em relação à v5.1.</p>
+  ${tbl(['Nível','Mudança'],[
+    ['N1','<b>Telegram Bot API</b> adicionado como canal principal; WhatsApp marcado como <b>desligado</b> (conta Meta bloqueada); STT agora é Whisper local; SMTP é Gmail com anexos'],
+    ['N2','Contêiner "Bot WhatsApp" → <b>Bot (Telegram + WhatsApp)</b>; volumes media/whisper/pgdata; Celery com worker + beat; nginx (web) faz proxy de /api, /ws e /webhook'],
+    ['N3-Bot','Novos: <b>Telegram Adapter</b>, <b>Gerenciador de Anexos</b>; Senders (Telegram + WA); Intent Parser v1.1'],
+    ['N3-API','Novos: <b>Anexos (Mídia)</b>, <b>Telegram Notifier</b>; WA Notifier em mock'],
+    ['N3-Web','Anexos no detalhe com Baixar; Perfil com vinculação do Telegram; badge Telegram; fila de notificações no Admin'],
+    ['N4','Novas páginas: Telegram Adapter, Gerenciador de Anexos, Telegram Notifier, Anexos, WhatsApp desligado. Atualizadas: Usuario Service, Webhook Receiver, Remetente Checker, Media Downloader, STT, Intent Parser, API Client, Senders, Auth Middleware, Incidente Service, Auditoria, Email/WA Notifier, Zabbix, Perfil, Incidentes, Admin'],
+  ])}
+  <h3>v6.0 — Pull requests</h3>
+  ${tbl(['PR','Conteúdo'],[
+    ['#1','CI no GitHub Actions: testes, migrações num PostgreSQL real, build da SPA e validação do compose'],
+    ['#2','Zabbix 7.0 local de teste + <code>scripts/zabbix_setup.py</code>; grupo Dispositivos abre incidentes'],
+    ['#3','Transcrição do áudio de vídeos; Intent Parser v1.1 (sem acentos, início de palavra, "!", negação, ~70 palavras)'],
+    ['#4','Cadastro de equipamento por rótulos (patrimônio, tipo, modelo, série, local)'],
+    ['#5','Anexos foto/vídeo/documento no chamado, download, e-mail com arquivos, vocabulário de TI no Whisper (migrações 0002/0003)'],
+    ['#6','Canal Telegram completo: bot, vinculação por contato, notificações (migração 0004)'],
+  ])}
+  <h3>v6.0 — Números</h3>
+  ${tbl(['Item','Valor'],[
+    ['Testes automatizados','151 (backend: API, anexos, migrações, logs, Telegram; bot: parser, processor, mídia)'],
+    ['Migrações Alembic','0001 esquema + trigger de auditoria · 0002 anexos · 0003 documentos e anexos no e-mail · 0004 Telegram — aplicadas no boot da API'],
+    ['Canais de entrada','Telegram (ativo), Web, Zabbix, WhatsApp (desligado)'],
+    ['Canais de notificação','E-mail, Telegram, WebSocket (WhatsApp em mock)'],
+  ])}
+  <div class="note">Encontrado pela simulação (<code>scripts/simular.py</code>) e corrigido: um vídeo sem legenda sobre OUTRO problema, enviado logo após um chamado, era anexado a ele; agora o bot pergunta "Anexar ao INC-XXXX" ou "Novo chamado".</div>
+  <div class="note">Correções encontradas na implementação: cache do Remetente Checker guardava "não cadastrado"; "não está funcionando" resolvia o chamado (negação); "agua" casava "aguardando"; tokens apareciam no log do uvicorn (filtro de redação); PyAV 16+ quebrava o faster-whisper.</div>
+  <h3>v5 — Correções de setas + testes estruturais</h3>
+  ${tbl(['#','Nível','Seta','Problema','Correção'],[
+    ['1','N3-Bot','<code>erro/ajuda</code>','Invertida: saía do ITP (x=230), não do WAS (x=670)','<code>was→itp</code>: x1=670→310'],
+    ['2','N2','<code>SQL</code> Celery→PostgreSQL','Saía do Bot (x=146), não do Celery (x=466)','Origem corrigida para Celery (cx=466)'],
+    ['3','N2','<code>envia msg</code> API→WA API','Label era "webhook" (sentido errado — webhook é WA→API)','Label corrigido para "envia msg"'],
+    ['4','N3-API','<code>escalonamento</code> SLA→ISV','Terminava em x=483 — no vazio entre ISV(r=407) e SLA(x=460)','Destino corrigido: x2=cx(255,152)=331 (ISV.cx)'],
+    ['5','N3-API','<code>verifica ativo</code> mid→asv','Destino era USV (x=665), não ASV (x=536)','Destino corrigido: x2=cx(460,152)=536 (ASV.cx)'],
+  ])}
+  <h3>v5 — Notas de layout adicionadas</h3>
+  ${tbl(['Painel','Nota'],[
+    ['N4-zbx (Zabbix)','Zabbix fica na mesma faixa Y do Sistema (y≈310). Distinção correta: eixo X — Zabbix x≥730, Sistema x=290..490'],
+    ['N4-adm (Admin)','Admin (x=385..530) e Sistema (x=290..490) têm X sobrepostos (interseção 385..490px). Distinção correta: eixo Y — Admin y≈30 (atores), Sistema y≈230'],
+  ])}
+  <h3>v5 — Testes estruturais (52 testes em 6 suítes)</h3>
+  ${tbl(['Suíte','Cobertura','Testes'],[
+    ['s-c4-n1','N1 — Contexto','8: 9 nós + 8 setas verificadas individualmente por label'],
+    ['s-c4-n2','N2 — Contêineres','8: Celery→PostgreSQL, label envia msg, todas as setas'],
+    ['s-c4-n3bot','N3-Bot','9: todas as 9 setas incluindo was→itp corrigida'],
+    ['s-c4-n3web','N3-Web','5: navegação, push evento WS, 3 setas REST'],
+    ['s-c4-n3api','N3-API','10: escalonamento→ISV, verifica ativo→ASV, todas as 10 setas'],
+    ['s-c4-zbx','N4-Zabbix','12: mapeamento severidade, 7 passos, token, notas de layout'],
+  ])}
+  <div class="note">Bug detectado durante criação dos testes: <code>nearest(X)</code> retornava falsos positivos em dois casos de sobreposição de coordenadas no N1 (Admin/Sistema compartilham X; Zabbix/Sistema compartilham Y). As setas do C4 estavam corretas — o algoritmo dos testes foi corrigido para verificação explícita por label, combinando X e Y quando necessário.</div>
+  <h3>v5.1 — Rodada 12: 100 novos testes, 11 N4s atualizados</h3>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7">10 suítes iterativas (s-r12-*), cada uma focada em 1 componente "dono" + colaboradores. 42 novos comportamentos documentados derivados dos testes. Nenhuma correção de seta — todas as descobertas foram de comportamento de runtime.</p>
+  ${tbl(['N4 atualizado','Descobertas documentadas'],[
+    ['n4-usv','Campos retornados por GET /usuarios; flags do novo usuário; efeito imediato de permissões; upsert no re-login'],
+    ['n4-oau','Re-login preserva permissões (upsert, não insert)'],
+    ['n4-mid','Sem JWT: interceptor falha antes de chegar ao middleware; comportamento do API Client web'],
+    ['n4-isv','Estado inicial sempre ABERTO; MTTR=0 válido; concorrência sem "last write wins"'],
+    ['n4-sla','SLA=0h imediato; SLA editado não afeta existentes; EM_ATRASO não regride; escalonamento → coordenação'],
+    ['n4-aud','Tabela canal×ação×usuario_id; detalhe.mttr no log de resolução; detalhe.permissao no log de permissão'],
+    ['n4-asv','VALIDADO/INVALIDO são estados finais (400); 409 inclui estado; patrimônio vazio sem verificação'],
+    ['n4-ema','Tabela completa de destinatários (vai/não vai por evento)'],
+    ['n4-wno','Tabela destinatários WA; REQ-15 com detalhe de quem NÃO recebe'],
+    ['n4-prf','Vinculação/desvinculação WA com efeito imediato'],
+    ['n4-ntf','5 tipos de evento confirmados; backoff 1→2→4→8→30s; recuperação pós-reconexão'],
+  ])}
+  <h3>v4 — Histórico anterior</h3>
+  <p style="font-size:11px;color:var(--muted);line-height:1.7">Adição do Zabbix (N1→N4), fluxo automático de recuperação, bot WhatsApp completo (7 componentes), 212 testes de integração, 100 E2E de ponta a ponta, Intent Parser com keywords e mapeamento de severidade Zabbix.</p>
+`);
+
+// Adiciona botão de changelog no header
+document.addEventListener('DOMContentLoaded',()=>{
+  const hdr=document.querySelector('header');
+  if(hdr){
+    const btn=document.createElement('button');
+    btn.textContent='📋 Changelog';
+    btn.style.cssText='margin-left:8px;font-size:11px;padding:3px 8px;opacity:.7';
+    btn.onclick=()=>nav('changelog','Changelog');
+    hdr.insertBefore(btn,hdr.querySelector('.hint'));
+  }
+});
+
+renderLevel('n1','Contexto do Sistema');
+</script>
+</body>
+</html>

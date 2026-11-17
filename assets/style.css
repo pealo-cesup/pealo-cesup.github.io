@@ -183,3 +183,50 @@ figure { margin: 28px 0 0; }
 figure img { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 8px; }
 figcaption { margin-top: 8px; font-size: .88rem; color: var(--muted); text-align: center; }
 .band.dark .tag { color: var(--gold); }
+
+/* ---- v6.0 ---- */
+.channel { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); }
+.channel h3 { margin-bottom: .2em; }
+.channel h3 em { font-family: Inter, sans-serif; font-style: normal; font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--red); margin-left: 6px; }
+.channel p { margin: 0; color: var(--muted); font-size: .95rem; }
+.channel .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; margin-top: 7px; background: #3f8f3a; box-shadow: 0 0 0 4px color-mix(in srgb, #3f8f3a 25%, transparent); }
+.channel.off { border-style: dashed; }
+.channel.off .dot { background: transparent; border: 2px solid var(--muted); box-shadow: none; }
+
+.video { margin-top: 24px; border-radius: 14px; overflow: hidden; border: 1px solid #3a4a34; background: #000; aspect-ratio: 16 / 9; }
+.video video { width: 100%; height: 100%; display: block; }
+.chapters { margin: 20px 0 0; padding-left: 1.3em; columns: 2 260px; column-gap: 32px; font-size: .95rem; opacity: .85; }
+.chapters li { margin-bottom: 6px; break-inside: avoid; }
+
+.states { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; position: relative; }
+.states li { padding: 20px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); position: relative; }
+.states li:not(:last-child)::after { content: "→"; position: absolute; right: -14px; top: 50%; transform: translate(50%, -50%); color: var(--gold); font-weight: 700; font-size: 1.2rem; }
+.states b { display: block; font-family: ui-monospace, Consolas, monospace; font-size: 1.05rem; color: var(--green); margin-bottom: 6px; }
+.states p { margin: 0; color: var(--muted); font-size: .93rem; }
+@media (max-width: 720px) { .states { grid-template-columns: 1fr; } .states li:not(:last-child)::after { content: "↓"; right: 50%; top: auto; bottom: -14px; transform: translate(50%, 50%); } }
+.state-alt { margin-top: 14px; display: flex; gap: 14px; align-items: baseline; padding: 16px 20px; border-radius: 14px; border: 1px dashed var(--red); }
+.state-alt p { margin: 0; }
+.state-alt b { font-family: ui-monospace, Consolas, monospace; color: var(--red); }
+.tag.red { background: color-mix(in srgb, var(--red) 18%, transparent); color: var(--red); flex: none; }
+
+.examples { margin-top: 20px; display: grid; gap: 8px; }
+.examples div { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; padding: 10px 14px; border-radius: 10px; background: var(--surface); }
+.examples code { color: var(--green); font-size: .92rem; }
+.examples span { color: var(--muted); font-size: .88rem; }
+
+.c4-frame { margin-top: 24px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); height: min(78vh, 760px); background: #12141c; }
+.c4-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+.history { margin-top: 28px; display: grid; gap: 10px; }
+.history details { border: 1px solid var(--line); border-radius: 14px; background: var(--bg); }
+.history summary { list-style: none; cursor: pointer; display: flex; gap: 16px; align-items: center; padding: 14px 18px; }
+.history summary::-webkit-details-marker { display: none; }
+.history summary::after { content: "+"; margin-left: auto; color: var(--muted); font-size: 1.3rem; }
+.history details[open] summary::after { content: "−"; }
+.history .h-n { font-family: Fraunces, serif; font-weight: 800; font-size: 1.5rem; color: var(--line); min-width: 2ch; }
+.history .h-n.final { color: var(--gold); }
+.history .h-t time { display: block; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.history .h-t strong { font-family: Fraunces, serif; font-size: 1.05rem; }
+.history details p { margin: 0; padding: 0 18px 18px 64px; color: var(--muted); }
+@media (max-width: 560px) { .history details p { padding-left: 18px; } }
+.band.dark p { opacity: .9; }
