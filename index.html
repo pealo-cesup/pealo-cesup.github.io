@@ -10,7 +10,7 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="https://pealo-cesup.github.io/">
 <meta property="og:title" content="PEALO · CESUP — Incidente laçado antes de disparar">
-<meta property="og:description" content="Sistema de Registro de Incidentes do datacenter do CESUP/UFRGS. Relato por Telegram, painel web e Zabbix, com SLA e C4 Model v6.1.">
+<meta property="og:description" content="Sistema de Registro de Incidentes do datacenter do CESUP/UFRGS. Relato por Telegram, WhatsApp, Signal, painel web e Zabbix, com SLA e C4 Model v6.1.">
 <meta property="og:image" content="https://pealo-cesup.github.io/assets/simulacao-poster.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
@@ -77,19 +77,20 @@
         <p class="eyebrow">Como funciona</p>
         <h2>Relata por onde estiver. A PEALO fica sabendo.</h2>
         <p class="muted">Cada relato vira um chamado com protocolo, criticidade e prazo. Alertas do Zabbix abrem chamados sozinhos e os fecham quando o problema se recupera.</p>
-        <p class="muted">Em produção, outras ferramentas de entrega, como o WhatsApp e o Telegram, serão implementadas futuramente.</p>
+        <p class="muted">O bot atende com o mesmo menu no Telegram, no WhatsApp e no Signal. Os números do bot são vinculados por QR code no próprio painel.</p>
       </div>
       <div class="cards">
-        <div class="channel on"><span class="dot"></span><div><h3>Telegram</h3><p>Canal principal. Texto, áudio, foto, vídeo e documento. A conta é vinculada pelo próprio número de celular.</p></div></div>
-        <div class="channel on"><span class="dot"></span><div><h3>Painel web</h3><p>Login com Google. Registro, atendimento, resolução, inventário e administração.</p></div></div>
+        <div class="channel on"><span class="dot"></span><div><h3>Telegram</h3><p>Menu com botões e comandos como <code>/novo</code> e <code>/chamados</code>. Texto, áudio, foto, vídeo e documento. A conta é vinculada pelo próprio número de celular.</p></div></div>
+        <div class="channel on"><span class="dot"></span><div><h3>Painel web</h3><p>Login com Google, tema claro e escuro, pensado também para o celular. Registro, atendimento, resolução, inventário e administração.</p></div></div>
         <div class="channel on"><span class="dot"></span><div><h3>Zabbix</h3><p>Monitora a infraestrutura e abre o chamado por webhook. A recuperação fecha automaticamente.</p></div></div>
-        <div class="channel on"><span class="dot"></span><div><h3>WhatsApp</h3><p>Integração pela Cloud API da Meta. Texto, áudio, foto, vídeo e documento, com as mesmas regras do Telegram.</p></div></div>
+        <div class="channel on"><span class="dot"></span><div><h3>WhatsApp</h3><p>Pela ponte WAHA, com o mesmo menu do Telegram em forma de enquete clicável. Texto, áudio, foto, vídeo e documento, com as mesmas regras.</p></div></div>
+        <div class="channel on"><span class="dot"></span><div><h3>Signal</h3><p>Mesmo menu e mesmas regras, via signal-cli. O número é vinculado por QR code em Admin → Canais.</p></div></div>
       </div>
     </div>
     <div class="stats">
       <div><b>173</b><span>testes automatizados no backend e no bot</span></div>
-      <div><b>7</b><span>contêineres: db · redis · api · worker · beat · bot · web</span></div>
-      <div><b>4</b><span>migrações Alembic, aplicadas na subida da API</span></div>
+      <div><b>5</b><span>contêineres: db · redis · api · bot · web, mais WAHA e Signal opcionais</span></div>
+      <div><b>5</b><span>migrações Alembic, aplicadas na subida da API</span></div>
       <div><b>0</b><span>áudios enviados para fora: Whisper roda local</span></div>
     </div>
   </section>
@@ -159,7 +160,7 @@
 
     <h3 class="sub">Do relato ao chamado, no bot</h3>
     <ol class="flow">
-      <li><b>Recebe</b> a mensagem no Telegram e identifica a pessoa pelo chat</li>
+      <li><b>Recebe</b> a mensagem no Telegram, no WhatsApp ou no Signal e identifica a pessoa pelo chat</li>
       <li><b>Transcreve</b> áudio e a fala dos vídeos com Whisper local</li>
       <li><b>Interpreta</b> a intenção: registrar, consultar, resolver ou cadastrar</li>
       <li><b>Registra</b> na API com o canal e a criticidade</li>
