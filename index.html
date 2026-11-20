@@ -97,26 +97,48 @@
   <!-- SIMULAÇÃO -->
   <section id="simulacao" class="band dark">
     <div class="wrap section">
-      <p class="eyebrow">Simulação de ponta a ponta · 6 min 35 s</p>
-      <h2>Um dia de incidentes, do relato à resolução</h2>
-      <p>API e bot rodando com o código real em ambiente isolado. Usuários fictícios relatam pelo WhatsApp e pelo Telegram, o técnico atende pelo painel, o Zabbix dispara um alerta e o SLA estoura.</p>
+      <p class="eyebrow">Simulação de ponta a ponta · 6 min 34 s</p>
+      <h2>Do recado perdido ao chamado resolvido</h2>
+      <p>Um fim de semana sem registro mostra o problema. Depois, treze cenas com a API e o bot rodando o código real em ambiente isolado: usuários fictícios relatam pelo WhatsApp e pelo Telegram, o técnico atende pelo painel e pelo chat, o Zabbix abre e fecha um chamado sozinho e o SLA estoura. Narrado, com legendas.</p>
       <div class="video">
-        <video controls preload="none" poster="assets/simulacao-poster.jpg">
+        <video id="simulacao-video" controls preload="none" poster="assets/simulacao-poster.jpg">
           <source src="assets/simulacao.mp4" type="video/mp4">
           <track kind="captions" src="assets/simulacao.vtt" srclang="pt-BR" label="Português">
           Seu navegador não reproduz vídeo. <a href="assets/simulacao.mp4">Baixe o arquivo</a>.
         </video>
       </div>
       <ol class="chapters">
-        <li>Chamado aberto por texto, com foto enviada depois</li>
-        <li>Áudio vira chamado ALTA e um PDF é anexado</li>
-        <li>Consulta e cobrança pelo bot</li>
-        <li>Cadastro de equipamento por palavras-chave</li>
-        <li>Vinculação da conta no Telegram</li>
-        <li>Arquivo antes do relato e vídeo com fala</li>
-        <li>Técnico assume pela web e resolve pelo Telegram</li>
-        <li>Alerta do Zabbix e SLA estourado</li>
+        <li><a href="#simulacao" data-t="0"><time>0:00</time>O problema: um fim de semana sem registro</a></li>
+        <li><a href="#simulacao" data-t="60"><time>1:00</time>A proposta: um só lugar para os incidentes</a></li>
+        <li><a href="#simulacao" data-t="124"><time>2:04</time>1 · Número não cadastrado é recusado</a></li>
+        <li><a href="#simulacao" data-t="134"><time>2:14</time>2 · Chamado por texto, com foto anexada</a></li>
+        <li><a href="#simulacao" data-t="157"><time>2:37</time>3 · Áudio vira chamado ALTA e PDF é anexado</a></li>
+        <li><a href="#simulacao" data-t="179"><time>2:59</time>4 · Consulta e cobrança pelo bot</a></li>
+        <li><a href="#simulacao" data-t="194"><time>3:14</time>5 · Cadastro de equipamento por palavras-chave</a></li>
+        <li><a href="#simulacao" data-t="218"><time>3:38</time>6 · Limites: figurinha e permissão de resolver</a></li>
+        <li><a href="#simulacao" data-t="230"><time>3:50</time>7 · Vinculação da conta no Telegram</a></li>
+        <li><a href="#simulacao" data-t="255"><time>4:15</time>8 · Planilha antes do relato e vídeo de outro problema</a></li>
+        <li><a href="#simulacao" data-t="292"><time>4:52</time>9 · Técnico vincula o Telegram</a></li>
+        <li><a href="#simulacao" data-t="316"><time>5:16</time>10 · Assume pela web e resolve pelo Telegram</a></li>
+        <li><a href="#simulacao" data-t="331"><time>5:31</time>11 · Resolve pelo WhatsApp</a></li>
+        <li><a href="#simulacao" data-t="344"><time>5:44</time>12 · Zabbix abre e fecha o chamado sozinho</a></li>
+        <li><a href="#simulacao" data-t="362"><time>6:02</time>13 · SLA vencido escala para a coordenação</a></li>
+        <li><a href="#simulacao" data-t="376"><time>6:16</time>Resultado</a></li>
       </ol>
+      <script>
+        document.querySelectorAll('.chapters a[data-t]').forEach(function (a) {
+          a.addEventListener('click', function (e) {
+            var v = document.getElementById('simulacao-video');
+            if (!v) return;
+            e.preventDefault();
+            var t = Number(a.dataset.t);
+            var seek = function () { v.currentTime = t; v.play(); };
+            if (v.readyState >= 1) seek();
+            else { v.addEventListener('loadedmetadata', seek, { once: true }); v.load(); }
+            v.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
+        });
+      </script>
     </div>
   </section>
 
