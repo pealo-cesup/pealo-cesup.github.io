@@ -1,0 +1,253 @@
+WEBVTT
+
+1
+00:00:00.500 --> 00:00:04.634
+Sexta-feira, seis e quarenta da tarde.
+
+2
+00:00:04.634 --> 00:00:13.102
+A Ana, pesquisadora, deixa uma simulação climática rodando no cluster do CESUP durante o fim de semana.
+
+3
+00:00:14.202 --> 00:00:17.536
+Sábado, duas da madrugada.
+
+4
+00:00:17.536 --> 00:00:22.979
+O storage do cluster para de responder, e a simulação trava.
+
+5
+00:00:22.979 --> 00:00:25.723
+Ninguém fica sabendo.
+
+6
+00:00:26.823 --> 00:00:30.482
+De manhã, a Ana percebe o problema.
+
+7
+00:00:30.482 --> 00:00:37.850
+Manda um e-mail para a equipe, um recado no WhatsApp pessoal do técnico e anota numa planilha.
+
+8
+00:00:37.850 --> 00:00:41.649
+Cada aviso vai para um lugar diferente.
+
+9
+00:00:42.749 --> 00:00:46.003
+Segunda-feira, oito e meia.
+
+10
+00:00:46.003 --> 00:00:51.727
+O técnico Carlos encontra o e-mail no meio de dezenas de mensagens.
+
+11
+00:00:51.727 --> 00:00:59.835
+Foram três dias de processamento perdidos, e não há registro, prazo nem histórico do que aconteceu.
+
+12
+00:01:00.935 --> 00:01:03.609
+E se fosse diferente?
+
+13
+00:01:03.609 --> 00:01:12.777
+A equipe precisava de um só lugar para relatar, acompanhar e resolver incidentes, pelos canais que todos já usam.
+
+14
+00:01:13.877 --> 00:01:18.476
+Assim nasceu o Sistema de Registro de Incidentes.
+
+15
+00:01:18.476 --> 00:01:24.029
+A pessoa relata pelo WhatsApp, pelo Telegram ou pelo Signal.
+
+16
+00:01:24.029 --> 00:01:28.558
+O Zabbix abre chamados sozinho quando algo para.
+
+17
+00:01:28.558 --> 00:01:34.556
+E o monitor de SLA vigia os prazos e avisa quem precisa saber.
+
+18
+00:01:34.556 --> 00:01:38.570
+Agora, veja a ferramenta funcionando.
+
+19
+00:01:39.670 --> 00:01:45.359
+Sistema de Registro de Incidentes do CESUP, UFRGS.
+
+20
+00:01:45.359 --> 00:01:51.737
+Versão final, revisada por recomendação do professor doutor Diego Kreutz.
+
+21
+00:01:51.737 --> 00:01:59.445
+Esta é uma simulação completa: a API e o bot rodam com o código real, em ambiente isolado,
+
+22
+00:01:59.445 --> 00:02:03.449
+sem enviar nenhuma mensagem de verdade.
+
+23
+00:02:04.549 --> 00:02:06.383
+Cena um.
+
+24
+00:02:06.383 --> 00:02:13.356
+Um número que não está cadastrado tenta abrir um chamado pelo WhatsApp, e o bot recusa.
+
+25
+00:02:14.456 --> 00:02:16.526
+Cena dois.
+
+26
+00:02:16.526 --> 00:02:24.214
+A Ana pede ajuda e descreve o problema: a workstation da sala de visualização não liga.
+
+27
+00:02:24.214 --> 00:02:31.597
+O bot abre o chamado com criticidade média, e a foto enviada em seguida é anexada a ele.
+
+28
+00:02:31.597 --> 00:02:35.885
+O técnico e o administrador são notificados.
+
+29
+00:02:37.121 --> 00:02:39.220
+Cena três.
+
+30
+00:02:39.220 --> 00:02:45.278
+A Ana manda um áudio: o ar-condicionado está pingando água em cima do rack.
+
+31
+00:02:45.278 --> 00:02:53.511
+A fala é transcrita e, como envolve água no datacenter, o chamado é aberto com criticidade alta.
+
+32
+00:02:53.511 --> 00:02:58.650
+O laudo em PDF enviado depois entra no mesmo chamado.
+
+33
+00:02:59.750 --> 00:03:01.919
+Cena quatro.
+
+34
+00:03:01.919 --> 00:03:07.828
+Pelo chat, a Ana consulta seus chamados e cobra uma resposta.
+
+35
+00:03:14.988 --> 00:03:17.132
+Cena cinco.
+
+36
+00:03:17.132 --> 00:03:24.735
+Cadastro de equipamento por palavras-chave: patrimônio, tipo, marca, modelo,
+
+37
+00:03:24.735 --> 00:03:29.044
+série e local preenchem a ficha do servidor.
+
+38
+00:03:29.044 --> 00:03:37.167
+A foto da plaqueta vira a foto do equipamento, e um segundo envio do mesmo patrimônio é recusado.
+
+39
+00:03:38.267 --> 00:03:40.392
+Cena seis.
+
+40
+00:03:40.392 --> 00:03:48.630
+Os limites: figurinha não é aceita, e um usuário comum não pode marcar chamados como resolvidos.
+
+41
+00:03:50.529 --> 00:03:52.704
+Cena sete.
+
+42
+00:03:52.704 --> 00:03:56.587
+No Telegram, o Bruno vincula a conta.
+
+43
+00:03:56.587 --> 00:04:05.010
+O bot pede o contato, recusa o contato de outra pessoa e aceita o dele, mesmo sem o nono dígito.
+
+44
+00:04:15.746 --> 00:04:17.805
+Cena oito.
+
+45
+00:04:17.805 --> 00:04:26.378
+O Bruno envia uma planilha antes de relatar o problema: ela fica guardada e entra no chamado aberto em seguida.
+
+46
+00:04:26.378 --> 00:04:32.591
+Depois ele manda um vídeo sobre outro problema, o projetor do auditório.
+
+47
+00:04:32.591 --> 00:04:39.639
+O bot pergunta se é o mesmo chamado ou um novo, e abre um chamado novo com o vídeo.
+
+48
+00:04:52.591 --> 00:04:54.670
+Cena nove.
+
+49
+00:04:54.670 --> 00:05:02.283
+O técnico Carlos também vincula o Telegram e passa a receber ali os avisos de novos chamados.
+
+50
+00:05:16.153 --> 00:05:18.187
+Cena dez.
+
+51
+00:05:18.187 --> 00:05:24.746
+O Carlos assume o chamado da rede pelo painel web e o resolve pelo Telegram.
+
+52
+00:05:24.746 --> 00:05:29.364
+O Bruno recebe a resolução no Telegram e por e-mail.
+
+53
+00:05:31.013 --> 00:05:33.042
+Cena onze.
+
+54
+00:05:33.042 --> 00:05:38.980
+O Carlos assume o chamado da workstation e o resolve pelo WhatsApp.
+
+55
+00:05:38.980 --> 00:05:41.274
+A Ana é avisada.
+
+56
+00:05:44.572 --> 00:05:46.681
+Cena doze.
+
+57
+00:05:46.681 --> 00:05:56.194
+Sem ninguém digitar nada, o Zabbix detecta que o storage do cluster parou de responder e abre um chamado de criticidade alta.
+
+58
+00:05:56.194 --> 00:06:01.547
+Quando o serviço volta, o próprio Zabbix fecha o chamado.
+
+59
+00:06:02.647 --> 00:06:04.807
+Cena treze.
+
+60
+00:06:04.807 --> 00:06:11.300
+O monitor de SLA encontra o chamado do ar-condicionado com o prazo vencido,
+
+61
+00:06:11.300 --> 00:06:15.649
+marca como em atraso e avisa a coordenação.
+
+62
+00:06:16.749 --> 00:06:28.451
+Resultado: 6 chamados, 4 anexos, 1 equipamento cadastrado, 25 notificações e 18 registros de auditoria.
+
+63
+00:06:28.451 --> 00:06:33.710
+O código está no repositório cesup_incidentes, no GitHub.
