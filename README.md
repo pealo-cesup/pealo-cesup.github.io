@@ -32,5 +32,4 @@ assets/c4-v7.0.html   C4 Model v7.0 interativo (em vigor)
 assets/c4-v6.1.html   C4 Model v6.1 interativo (histórico)
 assets/simulacao.mp4  apresentação narrada (história + simulação)
 assets/simulacao.vtt  legendas da apresentação
-assets/simulacao-completa.mp4  simulação completa narrada, usada no C4
 ```

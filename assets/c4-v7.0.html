@@ -1444,30 +1444,6 @@ LEVELS['n4-dep']=()=>n4panel('Implantação — Docker Compose e instalador','N2
   <div class="note">Testado do zero em Linux (Docker-in-Docker) e sobre a instalação existente no Windows. No Linux, o Docker publica portas por cima do <code>ufw</code>/<code>firewalld</code>: restrinja pelo <code>.env</code> (<code>PAINEL_PORTA=127.0.0.1:8080</code>).</div>`);
 
 // ── Changelog ────────────────────────────────────────────────────────────────
-// ── Vídeo da simulação ───────────────────────────────────────────────────────
-// Funciona no zip (vídeo ao lado do HTML) e no repositório (docs/simulacao.mp4)
-LEVELS['video']=()=>n4panel('Vídeos','Apresentação (história + ferramenta) e simulação completa · narrados',`
-  <h3>Apresentação</h3>
-  <video controls preload="metadata" style="width:100%;border-radius:8px;border:1px solid var(--border);background:#000;margin-bottom:6px">
-    <source src="simulacao.mp4" type="video/mp4">
-    <track kind="captions" src="simulacao.vtt" srclang="pt-BR" label="Português">
-  </video>
-  <div class="note tg">Full HD, com narração e legendas (<code>docs/apresentacao.srt</code>): primeiro uma história curta sobre o problema que o sistema resolve, depois a ferramenta funcionando. Pessoas e fatos da história são fictícios. Gerado por <code>scripts/video_historia.py</code>.</div>
-  <h3>Simulação completa</h3>
-  <video controls preload="metadata" style="width:100%;border-radius:8px;border:1px solid var(--border);background:#000">
-    <source src="simulacao-completa.mp4" type="video/mp4">
-  </video>
-  <div class="note tg">O vídeo, com narração em português, mostra uma execução real da API e do bot (<code>scripts/simular.py</code>) em ambiente isolado:
-  à esquerda, a conversa no celular; à direita, as notificações disparadas e o painel de chamados ao vivo. Nada é enviado de
-  verdade e a fala de áudios e vídeos é roteirizada. Gerado por <code>scripts/video_simulacao.py</code> no repositório
-  <a href="https://github.com/douglaslautert/cesup_incidentes" target="_blank" rel="noopener" style="color:var(--tg-t)">github.com/douglaslautert/cesup_incidentes</a>.</div>
-  ${tbl(['Cena','O que mostra'],[
-    ['1–6 · WhatsApp','Número não cadastrado; chamado por texto com foto; áudio vira chamado ALTA com PDF; consulta; cadastro de equipamento por palavras-chave; limites'],
-    ['7–9 · Telegram','Vinculação pelo contato; arquivo antes do relato; vídeo sobre outro problema (bot pergunta: anexar ou novo chamado); técnico vincula a conta'],
-    ['10–11 · Atendimento','Técnico assume no painel web e resolve pelo Telegram e pelo WhatsApp; quem abriu é notificado'],
-    ['12–13 · Automático','Zabbix abre e fecha um chamado sozinho; SLA Monitor escala prazo estourado'],
-  ])}`);
-
 LEVELS['changelog']=()=>n4panel('Changelog — C4 Model','Histórico de correções e atualizações',`
 
   <h3>v7.0 — Multicanal, vínculo por QR e instalador (24/11/2026)</h3>
@@ -1501,7 +1477,7 @@ LEVELS['changelog']=()=>n4panel('Changelog — C4 Model','Histórico de correç�
     ['Repositório','Código da ferramenta, este C4 e o vídeo: <a href="https://github.com/douglaslautert/cesup_incidentes" target="_blank" rel="noopener" style="color:var(--tg-t)">github.com/douglaslautert/cesup_incidentes</a> (vídeo em <code>docs/simulacao.mp4</code>)'],
     ['Exemplos e marca','Todo o material passa a usar <b>CESUP/UFRGS</b>: interface web, mensagens do bot, e-mails de exemplo (<code>@ufrgs.br</code>), seed de demonstração, testes, README e este C4. Cenários de datacenter e cluster'],
     ['Simulação completa','<code>scripts/simular.py</code>: API e bot reais em ambiente isolado, 13 cenas (WhatsApp, Telegram, web, Zabbix, SLA); relatório <code>docs/simulacao.html</code>'],
-    ['Vídeo','<code>scripts/video_simulacao.py</code> gera o vídeo narrado da simulação (MP4, 1280×720, ~5 min, narração em português com a voz do Windows) — botão <b>▶ Vídeo</b> no topo'],
+    ['Vídeo','<code>scripts/video_simulacao.py</code> gera o vídeo narrado da simulação (MP4, 1280×720, ~5 min, narração em português com a voz do Windows) — exibido na página do projeto'],
     ['Correção — vídeo de outro problema','Vídeo sem legenda logo após um chamado, cuja fala relata outro problema, era anexado ao chamado anterior; agora o bot pergunta <b>Anexar ao INC-XXXX</b> ou <b>Novo chamado</b>'],
     ['Correção — canal na resolução','Resolução feita pelo Telegram era registrada como "Resolvido via WhatsApp"; agora registra o canal certo'],
     ['Segurança','Token do bot do Telegram deixou de aparecer nos logs (filtro também no <code>httpx</code>, no worker e no beat); token revogado e trocado no BotFather'],
@@ -1587,11 +1563,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     btn.style.cssText='margin-left:8px;font-size:11px;padding:3px 8px;opacity:.7';
     btn.onclick=()=>nav('changelog','Changelog');
     hdr.insertBefore(btn,hdr.querySelector('.hint'));
-    const vid=document.createElement('button');
-    vid.textContent='▶ Vídeo';
-    vid.style.cssText='margin-left:4px;font-size:11px;padding:3px 8px;opacity:.85';
-    vid.onclick=()=>nav('video','Vídeo da simulação');
-    hdr.insertBefore(vid,hdr.querySelector('.hint'));
   }
 });
 
