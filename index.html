@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PEALO · CESUP</title>
-<meta name="description" content="PEALO: Pronta Equipe de Atendimento e Liberação de Ocorrências do CESUP. Sistema de Registro de Incidentes do datacenter, versão 6.1.">
+<meta name="description" content="PEALO: Pronta Equipe de Atendimento e Liberação de Ocorrências do CESUP. Sistema de Registro de Incidentes do datacenter, versão 7.0.">
 <meta name="theme-color" content="#2f4a2a">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="https://pealo-cesup.github.io/">
 <meta property="og:title" content="PEALO · CESUP — Incidente laçado antes de disparar">
-<meta property="og:description" content="Sistema de Registro de Incidentes do datacenter do CESUP/UFRGS. Relato por Telegram, WhatsApp, Signal, painel web e Zabbix, com SLA e C4 Model v6.1.">
+<meta property="og:description" content="Sistema de Registro de Incidentes do datacenter do CESUP/UFRGS. Relato por Telegram, WhatsApp, Signal, painel web e Zabbix, com SLA e C4 Model v7.0.">
 <meta property="og:image" content="https://pealo-cesup.github.io/assets/simulacao-poster.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
@@ -42,7 +42,7 @@
   <section class="hero">
     <div class="wrap hero-inner">
       <div>
-        <p class="eyebrow">CESUP / UFRGS · Versão 6.1</p>
+        <p class="eyebrow">CESUP / UFRGS · Versão 7.0</p>
         <h1>Incidente laçado<br>antes de disparar.</h1>
         <p class="lead">
           <strong>PEALO</strong> é a <strong>P</strong>ronta <strong>E</strong>quipe de
@@ -88,8 +88,8 @@
       </div>
     </div>
     <div class="stats">
-      <div><b>173</b><span>testes automatizados no backend e no bot</span></div>
-      <div><b>5</b><span>contêineres: db · redis · api · bot · web, mais WAHA e Signal opcionais</span></div>
+      <div><b>175</b><span>testes automatizados no backend e no bot</span></div>
+      <div><b>9</b><span>contêineres: db · redis · api · worker · beat · bot · web · waha · signal (os dois últimos opcionais)</span></div>
       <div><b>5</b><span>migrações Alembic, aplicadas na subida da API</span></div>
       <div><b>0</b><span>áudios enviados para fora: Whisper roda local</span></div>
     </div>
@@ -216,20 +216,20 @@
 
   <!-- ARQUITETURA -->
   <section id="arquitetura" class="wrap section">
-    <p class="eyebrow">Arquitetura · C4 Model v6.1</p>
+    <p class="eyebrow">Arquitetura · C4 Model v7.0</p>
     <h2>Clique nas caixas para descer de nível</h2>
     <p class="muted">Do contexto (N1) aos contêineres (N2), componentes (N3) e detalhes de cada componente (N4), com rotas, regras e casos testados.</p>
     <div class="c4-frame">
-      <iframe src="assets/c4-v6.1.html" title="C4 Model v6.1 interativo do Sistema de Registro de Incidentes" loading="lazy"></iframe>
+      <iframe src="assets/c4-v7.0.html" title="C4 Model v7.0 interativo do Sistema de Registro de Incidentes" loading="lazy"></iframe>
     </div>
-    <p class="small"><a href="assets/c4-v6.1.html" target="_blank">Abrir o C4 em tela cheia ↗</a></p>
+    <p class="small"><a href="assets/c4-v7.0.html" target="_blank">Abrir o C4 em tela cheia ↗</a></p>
   </section>
 
   <!-- TRAJETÓRIA -->
   <section id="trajetoria" class="wrap section">
     <p class="eyebrow">Trajetória</p>
-    <h2>Como chegamos à v6.1 e o que veio depois</h2>
-    <p class="muted">As apresentações registram as etapas do projeto. A definição em vigor é a v6.1, acima; ideias das primeiras versões, como as prioridades P1–P4 e o vigia externo 4G, ficaram fora dela. Depois da v6.1, o sistema ganhou um painel novo e o bot passou a atender também pelo Signal.</p>
+    <h2>Como chegamos à v7.0</h2>
+    <p class="muted">As apresentações registram as etapas do projeto. A definição em vigor é a v7.0, acima; ideias das primeiras versões, como as prioridades P1–P4 e o vigia externo 4G, ficaram fora dela. A v7.0 parte da versão final v6.1, revisada por recomendação do Prof. Dr. Diego Kreutz.</p>
 
     <div class="history">
       <details>
@@ -257,7 +257,7 @@
         <p>Telegram como canal principal, Whisper local, anexos de foto, vídeo e documento, e-mail com os arquivos do chamado, Zabbix 7.0 abrindo e fechando chamados, CI no GitHub Actions e 151 testes automatizados.</p>
       </details>
       <details>
-        <summary><span class="h-n final">07</span><span class="h-t"><time>17 nov</time><strong>C4 Model v6.1 · versão final</strong></span></summary>
+        <summary><span class="h-n">07</span><span class="h-t"><time>17 nov</time><strong>C4 Model v6.1 · versão final</strong></span></summary>
         <p>Revisada por recomendação do Prof. Dr. Diego Kreutz: exemplos no contexto CESUP/UFRGS, simulação completa em 13 cenas (WhatsApp, Telegram, web, Zabbix e SLA) com vídeo, correção do vídeo de outro problema anexado ao chamado errado e do canal registrado na resolução, token do Telegram fora dos logs e 153 testes automatizados.</p>
       </details>
       <details>
@@ -276,9 +276,13 @@
         <summary><span class="h-n">11</span><span class="h-t"><time>19 nov</time><strong>Vincular o bot pelo painel</strong></span></summary>
         <p>Os QR codes para conectar os números do WhatsApp e do Signal ficam em Admin → Canais, sem terminal. Trocar o número fica registrado na auditoria, e a chave da ponte nunca chega ao navegador. 173 testes automatizados.</p>
       </details>
-      <details open>
+      <details>
         <summary><span class="h-n">12</span><span class="h-t"><time>20 nov</time><strong>Apresentação em vídeo</strong></span></summary>
         <p>Nova versão do vídeo, com 6 min 34 s: começa pela história de um fim de semana sem registro, mostra a proposta e segue com as 13 cenas da simulação. Narrado, com legendas e capítulos nesta página.</p>
+      </details>
+      <details open>
+        <summary><span class="h-n final">13</span><span class="h-t"><time>24 nov</time><strong>C4 Model v7.0</strong></span></summary>
+        <p>A arquitetura passa a registrar o que veio depois da v6.1: WhatsApp de volta pela ponte WAHA, Signal como canal, vínculo dos números por QR code e o painel com Bootstrap 5. A implantação ganhou instalador para Windows e Linux e contêineres que voltam sozinhos quando o Docker reinicia, e as notificações ao vivo (ws-relay) se reconectam quando o Redis cai. 175 testes automatizados.</p>
       </details>
     </div>
   </section>
